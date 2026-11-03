@@ -1,0 +1,1298 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="description" content="Offene Lernumgebung Chemie Q2: räumliche Orientierung bei radikalischen Substitutionen">
+<title>Lernweltkarte Bromierung</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap">
+<style>
+/* Layout: Die Karte ist das Energiediagramm der Bromierung als Gelände. Die Stationen liegen auf Weg 2, die Benennung
+   der Wege erscheint erst nach Station 2. Rechts Leitfrage, Fortschritt und Werkzeuge. Eine Station öffnet sich als
+   Bogen über der Karte: links Material, rechts Aufgaben. */
+:root{
+  --bg:#EDF1EE; --surface:#FFFFFF; --surface-2:#F3F6F4; --ink:#16231D; --muted:#55645C; --line:#C9D4CE;
+  --route:#4B7A26; --route-ink:#FFFFFF; --ozone:#1D8C85; --ozone-tint:#CFEAE6; --uv:#6A44B5; --sun:#D99A00;
+  --sky-hi:#D6DDF0; --sky-lo:#EEF4F2; --trop:#E8F0EC; --ground:#C3CFB8; --ground-ink:#7C8B70; --ridge:#D3E0C2; --ridge-back:#E2E7E3;
+  --ok:#2B7A44; --ok-tint:#E0F1E5; --bad:#B3412A; --bad-tint:#F8E3DD; --hint:#7D5B00; --hint-tint:#FFF3D1;
+  --raddot:#C4492C; --plate:#FFFFFF; --scrim:rgba(16,24,20,.48);
+  --atom-o:#D2462E; --atom-cl:#3E9B4F; --atom-n:#3567C4; --atom-f:#C9A227; --atom-c:#4A4F4C;
+  --f-display:"Bricolage Grotesque","Avenir Next","Segoe UI",system-ui,sans-serif;
+  --f-body:"Atkinson Hyperlegible","Segoe UI",system-ui,-apple-system,sans-serif;
+  --f-num:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1416; --surface:#162024; --surface-2:#1C282C; --ink:#E3ECE7; --muted:#9BAEA5; --line:#2C3B38;
+    --route:#8CC15A; --route-ink:#0E1416; --ozone:#4CC2B8; --ozone-tint:#123634; --uv:#B497F2; --sun:#F2C24F;
+    --sky-hi:#121A31; --sky-lo:#18262E; --trop:#1A2A2C; --ground:#2B3727; --ground-ink:#71806A; --ridge:#26382A; --ridge-back:#1E2C2F;
+    --ok:#6FC78C; --ok-tint:#15301F; --bad:#F08C73; --bad-tint:#3A1D17; --hint:#F2C94C; --hint-tint:#30270E;
+    --raddot:#F08C73; --plate:#F6F8F7; --scrim:rgba(0,0,0,.62);
+    --atom-o:#F0745C; --atom-cl:#6CCB7C; --atom-n:#7FA6F2; --atom-f:#E8C55A; --atom-c:#B9C2BD;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1416; --surface:#162024; --surface-2:#1C282C; --ink:#E3ECE7; --muted:#9BAEA5; --line:#2C3B38;
+  --route:#8CC15A; --route-ink:#0E1416; --ozone:#4CC2B8; --ozone-tint:#123634; --uv:#B497F2; --sun:#F2C24F;
+  --sky-hi:#121A31; --sky-lo:#18262E; --trop:#1A2A2C; --ground:#2B3727; --ground-ink:#71806A; --ridge:#26382A; --ridge-back:#1E2C2F;
+  --ok:#6FC78C; --ok-tint:#15301F; --bad:#F08C73; --bad-tint:#3A1D17; --hint:#F2C94C; --hint-tint:#30270E;
+  --raddot:#F08C73; --plate:#F6F8F7; --scrim:rgba(0,0,0,.62);
+  --atom-o:#F0745C; --atom-cl:#6CCB7C; --atom-n:#7FA6F2; --atom-f:#E8C55A; --atom-c:#B9C2BD;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.45;-webkit-text-size-adjust:100%}
+body.noscroll{overflow:hidden}
+img{max-width:100%}
+[hidden]{display:none!important}
+button,input,select,textarea{font:inherit;color:inherit}
+h1,h2,h3{text-wrap:balance}
+sub,sup{font-size:.68em;line-height:0}
+.rad{font-weight:800;color:var(--raddot);padding:0 .03em}
+:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+
+/* Kopf */
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--line)}
+.brand{min-width:0}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.brand h1{margin:0;font-family:var(--f-display);font-weight:800;font-size:24px;line-height:1.1;letter-spacing:-.01em}
+.top-actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:8px 14px;border-radius:10px;border:1px solid var(--line);background:var(--surface);cursor:pointer;font-weight:700;font-size:15px;text-align:center}
+.btn.primary{background:var(--route);border-color:var(--route);color:var(--route-ink)}
+.btn.ghost{background:transparent}
+.btn.small{min-height:38px;padding:6px 12px;font-size:14px}
+.btn:disabled{opacity:.42;cursor:not-allowed}
+.role-chip{font-size:13px;color:var(--muted);align-self:center}
+.role-chip b{color:var(--ink)}
+
+/* Welt */
+.world{display:grid;grid-template-columns:minmax(0,1fr) minmax(290px,390px);gap:20px;padding:16px;max-width:1280px;margin:0 auto;align-items:start}
+.mapwrap{display:flex;justify-content:center;min-width:0}
+.map{position:relative;width:min(100%,calc((100vh - 112px)*.8));aspect-ratio:4/5;border-radius:16px;overflow:hidden;border:1px solid var(--line);background:var(--sky-lo);max-width:100%}
+@supports (height:100dvh){.map{width:min(100%,calc((100dvh - 112px)*.8))}}
+.map svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+.svg-lab{font-family:var(--f-body);font-weight:700;letter-spacing:.06em;fill:var(--ink)}
+.svg-sub{font-family:var(--f-body);fill:var(--muted)}
+.svg-num{font-family:var(--f-num);fill:var(--muted)}
+
+.stn{position:absolute;display:flex;align-items:center;gap:6px;background:none;border:0;padding:0;cursor:pointer;z-index:3;-webkit-tap-highlight-color:transparent}
+.stn.below{flex-direction:column;transform:translate(-50%,-21px)}
+.stn.right{flex-direction:row;transform:translate(-21px,-50%)}
+.stn.left{flex-direction:row-reverse;transform:translate(calc(-100% + 21px),-50%)}
+.stn.left .lab{text-align:right}
+.dot{position:relative;flex:none;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:var(--route);color:var(--route-ink);font-family:var(--f-display);font-weight:800;font-size:20px;box-shadow:0 0 0 4px var(--surface),0 3px 8px rgba(0,0,0,.25)}
+.dot svg{width:22px;height:22px}
+.dot.diamond{border-radius:7px;transform:rotate(45deg);width:36px;height:36px;margin:3px}
+.dot.diamond>*{transform:rotate(-45deg)}
+.stn.locked .dot{background:var(--surface-2);color:var(--muted);box-shadow:0 0 0 4px var(--surface),inset 0 0 0 2px var(--line)}
+.stn.done .dot{background:var(--surface);color:var(--route);box-shadow:0 0 0 4px var(--route),0 3px 8px rgba(0,0,0,.2)}
+.stn .tick{position:absolute;right:-8px;top:-8px;width:20px;height:20px;border-radius:50%;background:var(--ok);color:var(--surface);display:none;place-items:center}
+.dot.diamond .tick{right:auto;left:-10px;top:-10px}
+.stn.done .tick{display:grid}
+.stn .tick svg{width:12px;height:12px}
+.stn.next .dot{animation:pulse 1.9s ease-out infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 4px var(--surface),0 0 0 4px var(--sun)}70%{box-shadow:0 0 0 4px var(--surface),0 0 0 16px transparent}100%{box-shadow:0 0 0 4px var(--surface),0 0 0 4px transparent}}
+.lab{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:3px 9px;font-size:13.5px;font-weight:700;line-height:1.25;white-space:nowrap;text-align:left;color:var(--ink)}
+.stn.below .lab{text-align:center}
+.lab small{display:block;font-weight:400;font-size:12px;color:var(--muted)}
+.profi{position:absolute;left:68.5%;top:4.5%;width:29%;border:2px dashed var(--muted);border-radius:12px;background:var(--surface);padding:7px 8px;display:flex;flex-direction:column;gap:6px;z-index:3}
+.profi .eyebrow{font-size:11px}
+.pbtn{display:flex;align-items:center;gap:8px;min-height:40px;padding:4px 8px;border-radius:9px;border:1px solid var(--line);background:var(--surface-2);cursor:pointer;font-weight:700;font-size:13.5px;text-align:left}
+.pbtn .star{flex:none;width:24px;height:24px;border-radius:7px;display:grid;place-items:center;background:var(--sun);color:var(--ink);font-family:var(--f-display);font-size:14px}
+.pbtn.done{border-color:var(--ok)}
+.pbtn.done .star{background:var(--ok);color:var(--surface)}
+.profi-side{display:none;flex-direction:column;gap:8px}
+.token{position:absolute;z-index:4;transform:translate(-50%,-50%);padding:2px 8px;border-radius:99px;background:var(--ink);color:var(--surface);font-weight:700;font-size:13px;white-space:nowrap;pointer-events:none;transition:left 1.1s cubic-bezier(.4,.1,.2,1),top 1.1s cubic-bezier(.4,.1,.2,1);box-shadow:0 2px 6px rgba(0,0,0,.3)}
+.token .rad{color:var(--sun)}
+
+/* Seitenleiste */
+.side{display:flex;flex-direction:column;gap:14px;min-width:0}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.leit{border-left:6px solid var(--ozone)}
+.leit p{margin:6px 0 0;font-family:var(--f-display);font-weight:600;font-size:19px;line-height:1.3}
+.prog-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.prog-head b{font-family:var(--f-display);font-size:17px}
+.bar{height:8px;border-radius:99px;background:var(--surface-2);overflow:hidden;margin:8px 0 10px}
+.bar i{display:block;height:100%;background:var(--route);border-radius:99px;transition:width .6s}
+.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+.steps button{width:100%;display:grid;grid-template-columns:28px 1fr auto;align-items:center;gap:10px;padding:6px 6px;border:0;border-radius:8px;background:none;cursor:pointer;text-align:left}
+.steps button:hover{background:var(--surface-2)}
+.mini{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:800;background:var(--surface-2);color:var(--muted)}
+.mini.done{background:var(--route);color:var(--route-ink)}
+.pill{font-size:12px;font-weight:700;padding:2px 9px;border-radius:99px;background:var(--surface-2);color:var(--muted);white-space:nowrap}
+.pill.ok{background:var(--ok-tint);color:var(--ok)}
+.pill.now{background:var(--hint-tint);color:var(--hint)}
+.tools{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.next-btn{width:100%;min-height:52px;font-size:16px}
+
+/* Bogen (Station) */
+.sheet{position:fixed;inset:0;z-index:20;background:var(--bg);overflow-y:auto;-webkit-overflow-scrolling:touch}
+.sheet-head{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:var(--surface);border-bottom:1px solid var(--line);padding:calc(10px + env(safe-area-inset-top,0px)) 16px 10px}
+.sh-title{display:flex;align-items:center;gap:12px;min-width:0;flex:1 1 260px}
+.sh-title h2{margin:0;font-family:var(--f-display);font-weight:800;font-size:23px;line-height:1.1}
+.sh-title .dot{width:40px;height:40px;font-size:18px;box-shadow:none}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font-size:13px;font-weight:700;padding:4px 10px;border-radius:99px;background:var(--surface-2);border:1px solid var(--line)}
+.sheet-body{max-width:1200px;margin:0 auto;padding:16px;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:20px;align-items:start}
+.sheet-body.single{grid-template-columns:minmax(0,1fr);max-width:820px}
+.col{display:flex;flex-direction:column;gap:12px;min-width:0}
+.col>h3{margin:4px 0 0;font-size:12.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.mat{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.mat h4{margin:0 0 6px;font-size:16px;display:flex;gap:8px;align-items:baseline}
+.mat h4 .tag{font-family:var(--f-display);font-weight:800;color:var(--ozone)}
+.mat p{margin:0 0 8px}
+.mat p:last-child{margin-bottom:0}
+.mat ol,.mat ul{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:6px}
+.tbl{width:100%;border-collapse:collapse;font-size:15px}
+.tbl th,.tbl td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+.tbl th{background:var(--surface-2);font-size:13px}
+.tbl td.num{font-family:var(--f-num);white-space:nowrap}
+.tblwrap{overflow-x:auto}
+.formel{font-size:18px;padding:8px 12px;background:var(--surface-2);border-radius:8px;display:inline-block}
+.plate{background:var(--plate);border-radius:10px;padding:10px;border:1px solid var(--line)}
+.plate img{display:block;width:100%;height:auto}
+.cap{font-size:13px;color:var(--muted);margin-top:6px}
+.sheet-foot{max-width:1200px;margin:0 auto;padding:4px 16px calc(28px + env(safe-area-inset-bottom,0px));display:flex;justify-content:flex-end;align-items:center;gap:14px;flex-wrap:wrap}
+.sheet-foot p{margin:0;color:var(--muted);font-size:14px}
+.sheet-foot .check{flex:1 1 320px;max-width:560px;background:var(--hint-tint);border-color:var(--hint)}
+.sheet-foot .check[aria-pressed="true"]{background:var(--ok-tint);border-color:var(--ok)}
+.seg{display:flex;gap:6px;flex-wrap:wrap;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:5px}
+.seg button{flex:1 1 150px;min-height:44px;border:0;border-radius:8px;background:none;cursor:pointer;font-weight:700;font-size:14.5px;padding:6px 10px}
+.seg button[aria-pressed="true"]{background:var(--route);color:var(--route-ink)}
+.lock{display:flex;gap:12px;align-items:center}
+
+/* Aufgaben */
+.task{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.task.ok{border-color:var(--ok);box-shadow:inset 4px 0 0 var(--ok)}
+.task-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.tnum{font-family:var(--f-display);font-weight:800;color:var(--route);font-size:15px}
+.prompt{font-weight:700;margin:6px 0 12px}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{display:flex;gap:10px;align-items:flex-start;text-align:left;padding:10px 12px;border-radius:10px;border:2px solid var(--line);background:var(--surface-2);min-height:46px;cursor:pointer;font-size:15.5px}
+.opt .box{flex:none;width:20px;height:20px;margin-top:1px;border-radius:5px;border:2px solid var(--muted);display:grid;place-items:center}
+.opt.radio .box{border-radius:50%}
+.opt[aria-pressed="true"]{border-color:var(--route)}
+.opt[aria-pressed="true"] .box{background:var(--route);border-color:var(--route)}
+.opt[aria-pressed="true"] .box::after{content:"";width:8px;height:8px;border-radius:2px;background:var(--route-ink)}
+.opt.right{border-color:var(--ok);background:var(--ok-tint)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-tint)}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;align-items:center}
+.fb{margin-top:10px;padding:10px 12px;border-radius:10px;font-size:15px}
+.fb.ok{background:var(--ok-tint)}
+.fb.bad{background:var(--bad-tint)}
+.tip{margin-top:8px;padding:10px 12px;border-radius:10px;background:var(--hint-tint);border-left:4px solid var(--hint);font-size:15px}
+.tip b{color:var(--hint)}
+.eq{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;font-size:20px;padding:12px;background:var(--surface-2);border-radius:10px}
+.slot{min-width:86px;min-height:48px;border:2px dashed var(--muted);border-radius:10px;display:inline-flex;align-items:center;justify-content:center;padding:4px 12px;background:var(--surface);cursor:pointer;font-size:20px}
+.slot.filled{border-style:solid;border-color:var(--route)}
+.slot.right{border-color:var(--ok);background:var(--ok-tint)}
+.slot.wrong{border-color:var(--bad);background:var(--bad-tint)}
+.arr{display:inline-flex;flex-direction:column;align-items:center;font-size:12px;font-weight:700;color:var(--muted);line-height:1}
+.arr svg{width:58px;height:12px;color:var(--ink)}
+.tiles{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.tile{min-height:46px;min-width:56px;padding:6px 14px;border-radius:10px;border:1px solid var(--line);background:var(--surface);font-size:19px;cursor:pointer;box-shadow:0 2px 0 var(--line)}
+.tile:disabled{opacity:.3;cursor:default;box-shadow:none}
+.seq{display:flex;flex-direction:column;gap:6px}
+.seq .slot{justify-content:flex-start;width:100%;font-size:15.5px;text-align:left;gap:10px;min-height:46px}
+.seq .slot .n{flex:none;width:24px;height:24px;border-radius:50%;background:var(--surface-2);display:grid;place-items:center;font-weight:800;font-size:13px}
+.seq-pool{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.seq-pool .tile{font-size:15.5px;text-align:left;width:100%}
+.num-in{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:18px}
+.num-in input{width:130px;min-height:48px;padding:6px 10px;border-radius:10px;border:2px solid var(--line);background:var(--surface);font-family:var(--f-num);font-size:20px}
+.ta{width:100%;min-height:150px;border-radius:10px;border:2px solid var(--line);background:var(--surface);padding:10px 12px;font-size:16px;line-height:1.5;resize:vertical}
+.chiprow{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chiprow .lbl{font-size:12.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;width:100%}
+.wchip{min-height:38px;padding:4px 11px;border-radius:99px;border:1px solid var(--line);background:var(--surface-2);cursor:pointer;font-size:14.5px}
+.checks{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+.check{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:var(--surface-2);cursor:pointer;text-align:left;min-height:44px;font-size:15px}
+.check .box{flex:none;width:22px;height:22px;border-radius:6px;border:2px solid var(--muted);display:grid;place-items:center;margin-top:1px}
+.check[aria-pressed="true"]{border-color:var(--ok);background:var(--ok-tint)}
+.check[aria-pressed="true"] .box{background:var(--ok);border-color:var(--ok);color:var(--surface)}
+.check .box svg{width:13px;height:13px;display:none}
+.check[aria-pressed="true"] .box svg{display:block}
+.thesen{display:flex;flex-direction:column;gap:10px}
+.these{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 12px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface-2)}
+.these .tw{display:flex;gap:6px}
+.yn{min-height:44px;padding:4px 12px;border-radius:9px;border:2px solid var(--line);background:var(--surface);cursor:pointer;font-weight:700;font-size:14px}
+.yn[aria-pressed="true"]{border-color:var(--route);background:var(--route);color:var(--route-ink)}
+.cmp td .mk{font-weight:800}
+.ekarte{border:2px solid var(--ozone);border-radius:12px;padding:12px 14px;background:var(--surface)}
+.ekarte h4{margin:0 0 6px;color:var(--ozone);font-family:var(--f-display);font-weight:800}
+.ekarte ol{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:4px}
+.roles{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.role{display:flex;flex-direction:column;gap:2px;text-align:left;padding:10px 12px;border-radius:10px;border:2px solid var(--line);background:var(--surface-2);cursor:pointer;min-height:44px}
+.role b{font-size:15px}
+.role span{font-size:13px;color:var(--muted)}
+.role[aria-pressed="true"]{border-color:var(--route)}
+.pairpick{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pairpick button{display:flex;flex-direction:column;gap:4px;align-items:flex-start;text-align:left;padding:14px;border-radius:12px;border:2px solid var(--line);background:var(--surface);cursor:pointer}
+.pairpick button b{font-family:var(--f-display);font-size:19px}
+.pairpick button span{color:var(--muted);font-size:14px}
+.pairpick button[aria-pressed="true"]{border-color:var(--route);box-shadow:inset 0 0 0 1px var(--route)}
+
+/* Simulation */
+.sim{display:flex;flex-direction:column;gap:8px}
+.sim canvas{width:100%;height:auto;aspect-ratio:2/1;border-radius:10px;background:var(--surface-2);border:1px solid var(--line);display:block}
+.sim-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.counter{font-family:var(--f-num);font-weight:700;font-size:14px;margin:0}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:4px;vertical-align:-1px}
+.sim-msg{font-size:14.5px;padding:8px 10px;border-radius:9px;background:var(--hint-tint)}
+
+/* Formeln zum Antippen */
+.hmol{display:block;width:100%;height:auto;max-width:620px;margin:2px auto 0;touch-action:manipulation;-webkit-user-select:none;user-select:none}
+.hmol .bd,.alk .bd{stroke:var(--ink);stroke-width:2.6;stroke-linecap:round}
+.hmol text,.alk text{font-family:var(--f-body);font-weight:700;font-size:25px;fill:var(--ink);text-anchor:middle;dominant-baseline:central}
+.hmol .cn{font-size:15px;font-weight:400;fill:var(--muted)}
+.hb{cursor:pointer;-webkit-tap-highlight-color:transparent}
+.hb:focus{outline:none}
+.hb .hit{fill:transparent}
+.hb .ring{fill:var(--surface-2);stroke:var(--line);stroke-width:1.5}
+.hb:focus-visible .ring{stroke:var(--sun);stroke-width:3}
+.hb[aria-pressed="true"] .ring{fill:var(--route);stroke:var(--route)}
+.hb[aria-pressed="true"] text{fill:var(--route-ink)}
+.hb.right .ring{fill:var(--ok-tint);stroke:var(--ok)}
+.hb.right text{fill:var(--ok)}
+.hb.wrong .ring{fill:var(--bad-tint);stroke:var(--bad)}
+.hb.wrong text{fill:var(--bad)}
+
+/* Alkylgruppen-Schalter und Energiediagramm */
+.alk{display:flex;flex-direction:column;gap:10px}
+.alk svg{display:block;width:100%;max-width:380px;height:auto;margin:0 auto}
+.alk .halo{fill:var(--raddot);opacity:.2;transition:r .3s}
+.alk .edot{fill:var(--raddot)}
+.alk .ie{stroke:var(--ozone);stroke-width:3;stroke-linecap:round}
+.alk .seg button{flex:1 1 64px;padding:6px 4px}
+.alk-name{margin:0;text-align:center}
+.gauge{display:grid;grid-template-columns:auto minmax(90px,1fr);gap:6px 10px;align-items:center;font-size:14px}
+.gauge .b{height:12px;border-radius:99px;background:var(--surface-2);overflow:hidden;border:1px solid var(--line)}
+.gauge .b i{display:block;height:100%;background:var(--raddot);transition:width .3s}
+.gauge .b.st i{background:var(--route)}
+.plate-svg{background:var(--surface-2);border-radius:10px;padding:8px}
+.dia{display:block;width:100%;height:auto}
+.dia text{font-family:var(--f-body);font-size:14px;fill:var(--ink)}
+.dia .m{fill:var(--muted)}
+.dia .rt{fill:var(--raddot);font-weight:800}
+.kette{list-style:none;margin:6px 0 0;padding:0;counter-reset:k;display:flex;flex-direction:column;gap:6px}
+.kette li{counter-increment:k;display:flex;gap:10px;align-items:center;padding:8px 10px;border-radius:9px;background:var(--surface-2)}
+.kette li::before{content:counter(k);flex:none;width:24px;height:24px;border-radius:50%;background:var(--route);color:var(--route-ink);display:grid;place-items:center;font-weight:800;font-size:13px}
+
+/* Überlagerung */
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:30;max-width:min(560px,calc(100% - 32px));background:var(--ink);color:var(--surface);padding:12px 18px;border-radius:12px;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.pop{position:fixed;inset:0;z-index:40;background:var(--scrim);display:flex;align-items:flex-start;justify-content:center;padding:calc(24px + env(safe-area-inset-top,0px)) 16px 24px;overflow-y:auto}
+.pop-card{width:100%;max-width:640px;background:var(--surface);border-radius:16px;border:1px solid var(--line);padding:18px 18px 20px;box-shadow:0 20px 50px rgba(0,0,0,.3)}
+.pop-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}
+.pop-head h2{margin:0;font-family:var(--f-display);font-weight:800;font-size:22px}
+.treppe{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.treppe li{display:flex;gap:12px;align-items:center;padding:10px 12px;border-radius:10px;background:var(--surface-2)}
+.treppe li b.n{flex:none;width:30px;height:30px;border-radius:50%;background:var(--route);color:var(--route-ink);display:grid;place-items:center;font-family:var(--f-display)}
+.gloss{display:grid;grid-template-columns:minmax(120px,auto) minmax(0,1fr);gap:8px 14px;margin:0}
+.gloss dt{font-weight:700}
+.gloss dd{margin:0;color:var(--ink)}
+.res-sec{margin-top:14px}
+.res-sec h3{margin:0 0 6px;font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.answer{white-space:pre-wrap;padding:10px 12px;border-radius:10px;background:var(--surface-2)}
+.danger{border-color:var(--bad);color:var(--bad)}
+
+@media (max-width:900px){
+  .world{grid-template-columns:minmax(0,1fr)}
+  .map{width:100%}
+  .sheet-body{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:560px){
+  .dot{width:34px;height:34px;font-size:16px}
+  .dot.diamond{width:28px;height:28px}
+  .stn.below{transform:translate(-50%,-17px)}
+  .stn.right{transform:translate(-17px,-50%)}
+  .stn.left{transform:translate(calc(-100% + 17px),-50%)}
+  .lab{font-size:11.5px;padding:2px 6px}
+  .lab small{font-size:10.5px}
+  .lab small{display:none}
+  .profi{display:none}
+  .profi-side{display:flex}
+  .roles,.pairpick{grid-template-columns:1fr}
+  .these{grid-template-columns:1fr}
+  .eq{font-size:18px}
+}
+@media (prefers-reduced-motion:reduce){
+  .stn.next .dot{animation:none;box-shadow:0 0 0 4px var(--surface),0 0 0 7px var(--sun)}
+  .token,.bar i,.gauge .b i{transition:none}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="brand">
+      <div class="eyebrow">Chemie Q2, Steht im Schulbuch das falsche Produkt?</div>
+      <h1>Lernweltkarte</h1>
+    </div>
+    <div class="top-actions">
+      <span class="role-chip" id="roleChip" hidden></span>
+      <button class="btn small" type="button" data-pop="ergebnisse">Meine Ergebnisse</button>
+    </div>
+  </header>
+  <main class="world">
+    <div class="mapwrap">
+      <div class="map" id="map">
+        <svg viewBox="0 0 800 1000" aria-hidden="true" focusable="false">
+          <defs>
+            <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" style="stop-color:var(--sky-hi)"/>
+              <stop offset="1" style="stop-color:var(--sky-lo)"/>
+            </linearGradient>
+            <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+              <path d="M0 0 L10 5 L0 10 Z" style="fill:var(--muted)"/>
+            </marker>
+            <marker id="ae" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+              <path d="M0 0 L10 5 L0 10 Z" style="fill:var(--ozone)"/>
+            </marker>
+          </defs>
+          <rect x="0" y="0" width="800" height="960" fill="url(#sky)"/>
+          <!-- Weg 1: hoher Pass, liegt hinten -->
+          <path d="M56 840 L150 840 C205 840 232 262 320 250 C405 256 418 612 480 622 C528 626 540 548 590 546 C650 546 668 800 800 842 L800 960 L56 960 Z" style="fill:var(--ridge-back)"/>
+          <path d="M56 840 L150 840 C205 840 232 262 320 250 C405 256 418 612 480 622 C528 626 540 548 590 546 C650 546 668 800 800 842" fill="none" style="stroke:var(--muted)" stroke-width="3.5" stroke-dasharray="12 9"/>
+          <!-- Weg 2: niedriger Pass, liegt vorn, hier verläuft der Lernweg -->
+          <path d="M56 840 L150 840 C212 840 236 414 320 404 C402 412 420 668 480 676 C528 680 540 604 590 602 C650 602 672 846 800 884 L800 960 L56 960 Z" style="fill:var(--ridge)"/>
+          <g fill="none" stroke-linecap="round">
+            <path d="M118 840 L150 840 C212 840 236 414 320 404 C402 412 420 668 480 676 C528 680 540 604 590 602 C650 602 672 846 722 870" style="stroke:var(--surface)" stroke-width="12" opacity=".7"/>
+            <path d="M118 840 L150 840 C212 840 236 414 320 404 C402 412 420 668 480 676 C528 680 540 604 590 602 C650 602 672 846 722 870" style="stroke:var(--route)" stroke-width="5" stroke-dasharray="1 13"/>
+          </g>
+          <rect x="0" y="960" width="800" height="40" style="fill:var(--ground)"/>
+          <!-- Achsen -->
+          <g style="stroke:var(--muted)" stroke-width="2.5" fill="none">
+            <line x1="56" y1="960" x2="56" y2="44" marker-end="url(#ah)"/>
+            <line x1="56" y1="960" x2="786" y2="960" marker-end="url(#ah)"/>
+          </g>
+          <text class="svg-lab" x="26" y="60" font-size="24">E</text>
+          <text class="svg-sub" x="782" y="988" font-size="18" text-anchor="end">Reaktionsweg</text>
+          <text class="svg-sub" x="12" y="988" font-size="14">nach Fokus Chemie Qualifikationsphase, S. 172</text>
+          <!-- Legende: Benennung erst nach Station 2 -->
+          <text class="svg-lab" x="84" y="74" font-size="17">ENERGIELANDSCHAFT DER BROMIERUNG</text>
+          <g font-size="20">
+            <line x1="84" y1="104" x2="134" y2="104" style="stroke:var(--muted)" stroke-width="3.5" stroke-dasharray="12 9"/>
+            <text class="svg-sub" id="lg1" x="146" y="111" style="fill:var(--ink)">Weg 1</text>
+            <line x1="84" y1="138" x2="134" y2="138" style="stroke:var(--route)" stroke-width="5" stroke-dasharray="1 13" stroke-linecap="round"/>
+            <text class="svg-sub" id="lg2" x="146" y="145" style="fill:var(--ink)">Weg 2</text>
+          </g>
+          <text class="svg-lab" x="320" y="234" font-size="18" text-anchor="middle">Weg 1</text>
+          <text class="svg-lab" x="280" y="392" font-size="18" text-anchor="end">Weg 2</text>
+          <!-- Aktivierungsenergien: erscheinen nach Station 2 -->
+          <g id="eaGroup" hidden>
+            <g style="stroke:var(--ozone)" stroke-width="2" stroke-dasharray="6 6">
+              <line x1="96" y1="250" x2="312" y2="250"/><line x1="132" y1="404" x2="312" y2="404"/>
+              <line x1="86" y1="840" x2="150" y2="840"/>
+            </g>
+            <g style="stroke:var(--ozone)" stroke-width="3" fill="none">
+              <line x1="100" y1="812" x2="100" y2="256" marker-end="url(#ae)"/>
+              <line x1="136" y1="812" x2="136" y2="410" marker-end="url(#ae)"/>
+            </g>
+            <g font-size="17" class="svg-lab" style="fill:var(--ozone)">
+              <text x="70" y="540">E</text><text x="82" y="546" font-size="12">A</text>
+              <text x="144" y="620">E</text><text x="156" y="626" font-size="12">A</text>
+            </g>
+          </g>
+        </svg>
+        <div id="stations"></div>
+        <div class="token" id="token"></div>
+        <div class="profi" id="profi">
+          <div class="eyebrow">Profi-Station, wenn Zeit bleibt</div>
+          <button class="pbtn" type="button" data-open="p1"><span class="star">P</span><span>Chlor oder Brom?</span></button>
+        </div>
+      </div>
+    </div>
+    <aside class="side">
+      <section class="card leit">
+        <div class="eyebrow">Unsere Leitfrage</div>
+        <p id="leitText"></p>
+      </section>
+      <section class="card">
+        <div class="prog-head"><b>Euer Weg</b><span class="pill" id="progCount"></span></div>
+        <div class="bar"><i id="progBar" style="width:0"></i></div>
+        <ul class="steps" id="steps"></ul>
+      </section>
+      <button class="btn primary next-btn" type="button" id="nextBtn"></button>
+      <section class="tools" aria-label="Werkzeuge">
+        <button class="btn" type="button" data-pop="treppe">Hilfe-Treppe</button>
+        <button class="btn" type="button" data-pop="wortspeicher">Wortspeicher</button>
+        <button class="btn" type="button" data-pop="regeln">Spielregeln</button>
+        <button class="btn" type="button" data-pop="ergebnisse">Meine Ergebnisse</button>
+      </section>
+      <section class="card profi-side" aria-label="Profi-Station">
+        <div class="eyebrow">Profi-Station, wenn Zeit bleibt</div>
+        <button class="pbtn" type="button" data-open="p1"><span class="star">P</span><span>Chlor oder Brom?</span></button>
+      </section>
+    </aside>
+  </main>
+</div>
+
+<section class="sheet" id="sheet" hidden role="dialog" aria-modal="true" aria-labelledby="shTitle"></section>
+<div class="toast" id="toast" role="status" hidden></div>
+<div class="pop" id="pop" hidden role="dialog" aria-modal="true" aria-labelledby="popTitle">
+  <div class="pop-card"><div class="pop-head"><h2 id="popTitle"></h2><button class="btn small" type="button" data-a="pop-close">Schließen</button></div><div id="popBody"></div></div>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+/* ---------- Zustand ---------- */
+var KEY = 'bromierung-lernweltkarte-v1';     // eigener Schlüssel: alle Karten liegen unter derselben github.io-Adresse
+function fresh(){ return {v:1, rolle:'', paar:'', tab:'', tab3:'', vor:{}, nach:{}, tasks:{}, tips:{}, done:{}, trans:{}, text:{leit:''}, krit:{}, muster:false}; }
+var S = fresh();
+try { var raw = localStorage.getItem(KEY); if (raw) S = Object.assign(fresh(), JSON.parse(raw)); } catch (e) {}
+S.trans = S.trans || {};
+if (location.hash === '#neu') { S = fresh(); try { localStorage.removeItem(KEY); history.replaceState(null, '', location.pathname + location.search); } catch (e) {} }
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+
+/* ---------- Formeln ---------- */
+function fm(s){
+  return String(s)
+    .replace(/_(\d+)/g, '<sub>$1</sub>')
+    .replace(/\^([+−])/g, '<sup>$1</sup>')
+    .replace(/·(?=[A-Z])/g, '<span class="rad">·</span>')
+    .replace(/([A-Za-z0-9>])·/g, '$1<span class="rad">·</span>');
+}
+var SUBS = {'0':'₀','1':'₁','2':'₂','3':'₃','4':'₄','5':'₅','6':'₆','7':'₇','8':'₈','9':'₉'};
+function fu(s){ return String(s).replace(/_(\d+)/g, function(m, d){ return d.split('').map(function(c){ return SUBS[c]; }).join(''); }).replace(/\^\+/g, '⁺').replace(/\^−/g, '⁻'); }
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+var ICON = {
+  check:'<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3.2 3L13 4.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  flag:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 21V4M6 4h11l-2.5 4L17 12H6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/></svg>',
+  camp:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20L12 5l9 15H3zM12 20v-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/></svg>',
+  arrow:'<svg viewBox="0 0 60 12" aria-hidden="true"><line x1="1" y1="6" x2="50" y2="6" stroke="currentColor" stroke-width="2"/><path d="M48 1.5 L59 6 L48 10.5 Z" fill="currentColor"/></svg>'
+};
+function arrow(lab){ return '<span class="arr">' + (lab ? '<span>' + lab + '</span>' : '<span>&nbsp;</span>') + ICON.arrow + '</span>'; }
+
+
+/* ---------- Inhalte ---------- */
+var LEIT = 'Erklärt, warum bei der Bromierung von Heptan kaum 1-Bromheptan entsteht.';
+var THESEN = [
+  {id:'t1', text:'Alle H-Atome eines Alkan-Moleküls werden gleich leicht ersetzt.', ok:'nein', why:'Bei Propan wird ein H-Atom am sekundären C-Atom etwa 300-mal schneller ersetzt als eines am primären C-Atom.'},
+  {id:'t2', text:'Je stabiler ein Radikal ist, desto kleiner ist die Aktivierungsenergie für seine Bildung.', ok:'ja', why:'Stabiler heißt hier energieärmer. Die Aktivierungsenergie für seine Bildung ist kleiner.'},
+  {id:'t3', text:'Bei der Bromierung von Propan läuft nur einer der beiden möglichen Wege ab.', ok:'nein', why:'Beide Wege laufen gleichzeitig ab. Der schnellere Weg liefert das Hauptprodukt.'}
+];
+var ROLLEN = [
+  ['Moderation', 'leitet das Gespräch und achtet darauf, dass alle zu Wort kommen'],
+  ['Zeit-Manager', 'behält die Uhr im Blick, kommt nach jeder Station nach vorne und hakt euren Stand auf der Fortschrittstafel ab'],
+  ['Material und Hilfen', 'achtet auf die Hilfe-Treppe und holt die Lehrkraft erst bei Stufe 5'],
+  ['Sicherung', 'achtet darauf, dass alle mitschreiben, und bereitet die Vorstellung vor']
+];
+var WORTE = ['primäres C-Atom', 'sekundäres C-Atom', 'Alkylgruppe', '+I-Effekt', 'Elektronenmangel', 'stabiler', 'Aktivierungsenergie', 'schneller'];
+var ANFAENGE = ['Statistisch wären … zu erwarten, weil …', 'Am sekundären C-Atom entsteht …', 'Durch den +I-Effekt …', 'Deshalb ist die Aktivierungsenergie …', 'Daher entstehen fast nur …'];
+var KRIT = [
+  'Statistisch wären 37,5 % 1-Bromheptan zu erwarten, weil 6 von 16 H-Atomen an primären C-Atomen sitzen.',
+  'Am sekundären C-Atom entsteht das stabilere Radikal, weil zwei Alkylgruppen den Elektronenmangel durch ihren +I-Effekt verringern.',
+  'Deshalb ist die Aktivierungsenergie kleiner, und dieser Schritt läuft schneller ab.',
+  'Das Br-Atom bindet an das C-Atom mit dem ungepaarten Elektron. Deshalb entstehen fast nur 2-, 3- und 4-Bromheptan.'
+];
+var MUSTER = 'Statistisch wären 37,5 % 1-Bromheptan zu erwarten, weil 6 von 16 H-Atomen an primären C-Atomen sitzen. Gemessen wird aber unter 1 %. Am sekundären C-Atom entsteht das stabilere Radikal, weil zwei Alkylgruppen den Elektronenmangel durch ihren +I-Effekt verringern. Deshalb ist die Aktivierungsenergie für die Abspaltung eines H-Atoms am sekundären C-Atom kleiner, und dieser Schritt läuft schneller ab. Beide Wege laufen gleichzeitig ab, der schnellere bestimmt das Hauptprodukt. Da das Br-Atom an das C-Atom mit dem ungepaarten Elektron bindet, entstehen fast nur 2-, 3- und 4-Bromheptan.';
+var KETTE = ['Das sekundäre Radikal ist stabiler (+I-Effekt).', 'Die Aktivierungsenergie für seine Bildung ist kleiner.', 'Seine Bildung verläuft schneller.', 'Es entsteht vor allem 2-Brompropan.'];
+
+var TASKS = {
+  /* Station 1 */
+  '1a': {type:'htap', mol:'propan', want:function(h){ return h.c === 1 || h.c === 3; }, prompt:'Tippe alle H-Atome an, deren Ersatz zu 1-Brompropan führt.',
+    wrong:'Ein H-Atom am mittleren C-Atom führt zu 2-Brompropan.', miss:'Es fehlen noch H-Atome. Schau dir beide äußeren C-Atome an.',
+    ok:'Richtig. 6 der 8 H-Atome führen zu 1-Brompropan, die 2 H-Atome an C2 führen zu 2-Brompropan.',
+    tips:['In 1-Brompropan sitzt das Br-Atom an einem äußeren C-Atom.', 'Auch C3 ist ein äußeres C-Atom. Dreht man das Molekül, wird aus C3 wieder C1.']},
+  '1b': {type:'number', pre:'Anteil =', unit:'%', answer:75, tol:.5, prompt:'Berechne den statistisch erwarteten Anteil von 1-Brompropan.',
+    wrong:[[function(x){ return Math.abs(x - 25) < 1; }, 'Das ist der Anteil von 2-Brompropan.'], [function(x){ return x <= 1; }, 'Gib den Anteil in Prozent an.']],
+    ok:'Richtig: 6 : 8 = 75 %. Statistisch wären also 75 % 1-Brompropan zu erwarten.',
+    tips:['Statistisch zählt nur die Anzahl der H-Atome.', 'Teile die Anzahl der H-Atome aus Aufgabe 1a durch die Gesamtzahl 8.']},
+  '1c': {type:'single', prompt:'Vergleiche Erwartung und Messung aus M3. Wähle die Aussage, die den Widerspruch trifft.',
+    options:[
+      {t:'Die Messung muss falsch sein, denn die Statistik gilt immer.', fb:'Die Messung ist gesichert. Die Statistik setzt voraus, dass jedes H-Atom gleich leicht ersetzt wird. Genau diese Annahme stimmt nicht.'},
+      {t:'Erwartet werden 75 % 1-Brompropan, gemessen wird etwa 1 %. Die H-Atome am sekundären C-Atom werden also viel leichter ersetzt.', ok:true},
+      {t:'Die H-Atome an den äußeren C-Atomen können gar nicht ersetzt werden.', fb:'Es entsteht etwa 1 % 1-Brompropan. Diese H-Atome werden also auch ersetzt, nur viel seltener.'}],
+    ok:'Genau. Die Erklärung dafür erarbeitet ihr an Station 2.',
+    tips:['Vergleiche die Zahlen aus Aufgabe 1b und M3.', 'Beide Produkte entstehen, aber in ganz anderen Anteilen als erwartet.']},
+  /* Station 2, Paar A */
+  'A1': {type:'order', prompt:'Ordne die Radikale. Beginne mit dem am wenigsten stabilen. Der Schalter in MA3 hilft dir.',
+    items:['Methyl-Radikal (keine Alkylgruppe)', 'primäres Radikal (eine Alkylgruppe)', 'sekundäres Radikal (zwei Alkylgruppen)', 'tertiäres Radikal (drei Alkylgruppen)'],
+    shuffle:[2, 0, 3, 1],
+    ok:'Richtig. Je mehr Alkylgruppen benachbart sind, desto stabiler ist das Radikal.',
+    tips:['Lies den letzten Teil von MA2 noch einmal.', 'Vergleiche die Anzahl der Alkylgruppen am Radikal-C-Atom.']},
+  'A2': {type:'single', prompt:'Erkläre, warum das sekundäre Propyl-Radikal stabiler ist als das primäre. Wähle die passende Aussage.',
+    options:[
+      {t:'Das sekundäre Radikal besitzt kein ungepaartes Elektron mehr.', fb:'Es bleibt ein Radikal und reagiert weiter. Es ist nur energieärmer.'},
+      {t:'Eine Alkylgruppe gibt ein ganzes Elektron an das Radikal-C-Atom ab.', fb:'Es wandert kein ganzes Elektron. Die Alkylgruppe verschiebt nur Elektronendichte.'},
+      {t:'Das sekundäre Radikal hat zwei Alkylgruppen als Nachbarn. Durch ihren +I-Effekt verringern sie den Elektronenmangel stärker als eine Alkylgruppe.', ok:true}],
+    ok:'Richtig. Stabiler heißt hier energieärmer.',
+    tips:['Zähle die Alkylgruppen am Radikal-C-Atom in beiden Radikalen.', 'Das primäre Radikal hat eine Alkylgruppe als Nachbarn, das sekundäre zwei.']},
+  'A3': {type:'htap', mol:'propan', any:true, want:function(h){ return h.c === 2; }, prompt:'Tippe ein H-Atom an, dessen Abspaltung das stabilere Radikal liefert.',
+    wrong:'Fehlt dieses H-Atom, sitzt das ungepaarte Elektron an einem primären C-Atom.', miss:'Tippe zuerst ein H-Atom an.',
+    ok:'Richtig. Fehlt ein H-Atom an C2, sitzt das ungepaarte Elektron am sekundären C-Atom.',
+    tips:['Das ungepaarte Elektron sitzt später an dem C-Atom, das sein H-Atom verloren hat.', 'Suche das C-Atom mit zwei C-Nachbarn.']},
+  /* Station 2, Paar B */
+  'B1': {type:'build', prompt:'Ergänze Schritt 1 mithilfe von MB1.',
+    lhs:['Br·', 'C_3H_8'], slots:2, tiles:['Br_2', 'C_3H_7·', 'H_2', 'HBr', 'C_3H_7Br'], correct:['HBr', 'C_3H_7·'],
+    fb:{'Br_2':'Br_2 ist in diesem Schritt nicht beteiligt. Lies MB1: Das Brom-Radikal reißt ein H-Atom ab.', 'H_2':'Das abgerissene H-Atom bindet an das Brom-Radikal.', 'C_3H_7Br':'Das organische Produkt entsteht erst im zweiten Schritt.'},
+    ok:'Richtig: Br· + C_3H_8 → HBr + C_3H_7·',
+    tips:['Lies den zweiten und dritten Satz in MB1.', 'Es entstehen Bromwasserstoff und ein Propyl-Radikal.']},
+  'B2': {type:'build', prompt:'Ergänze Schritt 2 mithilfe von MB1.',
+    lhs:['C_3H_7·', 'Br_2'], slots:2, tiles:['HBr', 'Br·', 'C_3H_8', 'C_3H_7Br'], correct:['C_3H_7Br', 'Br·'],
+    fb:{'HBr':'HBr ist schon in Schritt 1 entstanden.', 'C_3H_8':'Propan ist das Edukt. Es entsteht hier nicht wieder.'},
+    ok:'Richtig: C_3H_7· + Br_2 → C_3H_7Br + Br·. Das Brom-Radikal ist wieder da, die Kette läuft weiter.',
+    tips:['Das Propyl-Radikal übernimmt ein Br-Atom aus dem Brom-Molekül.', 'Es entstehen Brompropan und wieder ein Brom-Radikal.']},
+  'B3': {type:'multi', prompt:'Vergleiche die beiden Kurven in MB2. Wähle die zwei richtigen Aussagen.',
+    options:[
+      {t:'Für die Bildung des sekundären Radikals ist die Aktivierungsenergie kleiner.', ok:true},
+      {t:'Für die Bildung des primären Radikals ist die Aktivierungsenergie kleiner.', fb:'Miss vom Startniveau bis zum Gipfel. Der Gipfel von Weg 1 liegt höher.'},
+      {t:'Das sekundäre Radikal liegt tiefer, es ist energieärmer.', ok:true},
+      {t:'Beide Wege enden auf demselben Energieniveau.', fb:'Vergleiche die rechten Enden der Kurven. Das primäre Radikal liegt höher.'}],
+    ok:'Richtig. Der Weg zum stabileren Radikal hat die kleinere Aktivierungsenergie.',
+    tips:['Vergleiche zuerst die Höhe der beiden Gipfel.', 'Vergleiche danach, wo die beiden Kurven rechts enden.']},
+  'B4': {type:'single', prompt:'Lass die Simulation MB3 einmal durchlaufen. Beschreibe, was bei der Reaktion passiert: Wähle die passende Aussage.',
+    options:[
+      {t:'Alle Teilchen nehmen den niedrigeren Berg.', fb:'Schau auf die Zähler. Auch über den höheren Berg kommen einige Teilchen. Beide Wege laufen.'},
+      {t:'Die Teilchen suchen sich den leichteren Weg aus.', fb:'Teilchen entscheiden nichts. Bei gleicher Temperatur besitzen mehr Teilchen genug Energie für den niedrigeren Berg.'},
+      {t:'Beide Wege laufen gleichzeitig ab. Über den niedrigeren Berg kommen mehr Teilchen, weil mehr Teilchen genug Energie besitzen. Dieser Weg läuft schneller.', ok:true}],
+    ok:'Richtig. Der schnellere Weg bestimmt das Hauptprodukt: Es entsteht vor allem 2-Brompropan.',
+    tips:['Starte die Simulation und vergleiche die beiden Zähler.', 'Viele Teilchen rollen zurück, weil ihre Energie nicht reicht. Am niedrigeren Berg reicht sie öfter.']},
+  /* Austausch: Fragen zum Teil des anderen Paars */
+  'QA1': {type:'single', prompt:'Das sekundäre Radikal ist stabiler als das primäre. Wähle die Begründung.',
+    options:[
+      {t:'Es hat mehr H-Atome.', fb:'Entscheidend sind die Alkylgruppen neben dem Radikal-C-Atom. Fragt Paar A noch einmal.'},
+      {t:'Zwei Alkylgruppen verringern den Elektronenmangel durch ihren +I-Effekt stärker als eine.', ok:true},
+      {t:'Es hat kein ungepaartes Elektron mehr.', fb:'Es bleibt ein Radikal. Fragt Paar A nach dem Elektronenmangel.'}],
+    ok:'Richtig.', tips:['Fragt Paar A nach dem +I-Effekt.', 'Zählt die Alkylgruppen am Radikal-C-Atom.']},
+  'QA2': {type:'single', prompt:'Wähle die richtige Reihenfolge der Stabilität.',
+    options:[
+      {t:'Methyl > primär > sekundär > tertiär', fb:'Die Reihenfolge läuft genau andersherum. Fragt Paar A.'},
+      {t:'tertiär > sekundär > primär > Methyl', ok:true},
+      {t:'primär > sekundär > tertiär > Methyl', fb:'Mehr Alkylgruppen stabilisieren stärker. Fragt Paar A.'}],
+    ok:'Richtig. Damit kennst du beide Teile.', tips:['Fragt Paar A nach ihrer Reihenfolge.', 'Am stabilsten ist das Radikal mit den meisten Alkylgruppen.']},
+  'QB1': {type:'single', prompt:'Wähle die richtige Aussage zum Energiediagramm.',
+    options:[
+      {t:'Für die Bildung des sekundären Radikals ist die Aktivierungsenergie kleiner.', ok:true},
+      {t:'Für die Bildung des primären Radikals ist die Aktivierungsenergie kleiner.', fb:'Der Gipfel von Weg 1 liegt höher. Fragt Paar B.'},
+      {t:'Die Aktivierungsenergie ist für beide Radikale gleich.', fb:'Die beiden Gipfel liegen verschieden hoch. Fragt Paar B.'}],
+    ok:'Richtig.', tips:['Fragt Paar B nach den beiden Gipfeln.', 'Der Weg zum stabileren Radikal hat den niedrigeren Gipfel.']},
+  'QB2': {type:'single', prompt:'Bei der Bromierung von Propan entsteht vor allem 2-Brompropan. Wähle die passende Begründung.',
+    options:[
+      {t:'Nur Weg 2 läuft ab.', fb:'Es entsteht auch etwa 1 % 1-Brompropan. Fragt Paar B.'},
+      {t:'Die Teilchen suchen sich den leichteren Weg aus.', fb:'Teilchen entscheiden nichts. Fragt Paar B nach der Simulation.'},
+      {t:'Beide Wege laufen gleichzeitig ab. Weg 2 läuft schneller, weil mehr Teilchen genug Energie besitzen.', ok:true}],
+    ok:'Richtig. Damit kennst du beide Teile.', tips:['Fragt Paar B nach den Zählern in der Simulation.', 'Der schnellere Weg bestimmt das Hauptprodukt.']},
+  /* Station 3 */
+  '3a': {type:'htap', mol:'heptan', want:function(h){ return h.c === 1 || h.c === 7; }, prompt:'Tippe alle H-Atome an primären C-Atomen an.',
+    wrong:'Dieses H-Atom sitzt an einem C-Atom mit zwei C-Nachbarn. Das C-Atom ist sekundär.', miss:'Es fehlen noch H-Atome. Primär sind beide Enden der Kette.',
+    ok:'Richtig. 6 der 16 H-Atome sitzen an primären C-Atomen, die anderen 10 an sekundären.',
+    tips:['Ein primäres C-Atom hat nur einen C-Nachbarn.', 'Primär sind C1 und C7, sie tragen je 3 H-Atome.']},
+  '3b': {type:'number', pre:'Anteil =', unit:'%', answer:37.5, tol:.6, prompt:'Berechne den statistisch erwarteten Anteil von 1-Bromheptan.',
+    wrong:[[function(x){ return Math.abs(x - 62.5) < 1; }, 'Das ist der Anteil der H-Atome an sekundären C-Atomen.'], [function(x){ return x <= 1; }, 'Gib den Anteil in Prozent an.']],
+    ok:'Richtig: 6 : 16 = 37,5 %. Gemessen wird aber unter 1 %.',
+    tips:['Rechne wie bei Propan.', 'Teile 6 durch die Gesamtzahl 16.']},
+  'T1': {type:'single', prompt:'Butan reagiert im Licht mit Brom. Wähle das Hauptprodukt.',
+    options:[
+      {t:'1-Brombutan, weil Butan an den Enden mehr H-Atome besitzt.', fb:'Die Anzahl allein entscheidet nicht. Das zeigt schon das Propan.'},
+      {t:'2-Brombutan, weil am sekundären C-Atom das stabilere Radikal entsteht.', ok:true},
+      {t:'Beide Produkte entstehen zu gleichen Teilen.', fb:'Das wäre nur so, wenn alle H-Atome gleich leicht ersetzt würden.'}],
+    ok:'Richtig. Es gilt dieselbe Erklärung wie bei Propan und Heptan.',
+    tips:['Suche die C-Atome mit zwei C-Nachbarn.', 'Am sekundären C-Atom entsteht das stabilere Radikal.']},
+  'T2': {type:'htap', mol:'methylbutan', want:function(h){ return h.c === 2; }, prompt:'Bei der Bromierung von 2-Methylbutan entsteht hauptsächlich 2-Brom-2-methylbutan. Tippe das H-Atom an, dessen Ersatz zu diesem Produkt führt.',
+    wrong:'Suche das C-Atom mit drei C-Nachbarn. Es trägt nur ein H-Atom.', miss:'Tippe zuerst ein H-Atom an.',
+    ok:'Richtig. Das H-Atom sitzt am tertiären C-Atom.',
+    tips:['Im Namen steht, an welchem C-Atom das Br-Atom sitzt.', 'C2 trägt die Methylgruppe. Daran sitzt genau ein H-Atom.']},
+  'T3': {type:'single', prompt:'Erläutere, warum vor allem 2-Brom-2-methylbutan entsteht. Wähle die passende Aussage.',
+    options:[
+      {t:'An C2 sitzt nur ein H-Atom, deshalb wird es am schnellsten ersetzt.', fb:'Die Anzahl der H-Atome erklärt das nicht. Denke an die Stabilität des Radikals.'},
+      {t:'Am tertiären C-Atom entsteht das stabilste Radikal, weil drei Alkylgruppen den Elektronenmangel verringern. Die Aktivierungsenergie ist am kleinsten.', ok:true},
+      {t:'Das Brom-Radikal sucht sich das größte C-Atom aus.', fb:'Teilchen suchen nichts aus. Entscheidend ist die Aktivierungsenergie.'}],
+    ok:'Richtig. Übertrage deine Erklärung auf das Ergebnisblatt.',
+    tips:['Zähle die Alkylgruppen am Radikal-C-Atom.', 'Nutze die Erklärkette aus Station 2.']},
+  /* Profi-Station */
+  'P1': {type:'number', pre:'Faktor =', unit:'', answer:3.7, tol:.25, prompt:'Berechne für Chlor, wie viel Mal schneller ein einzelnes H-Atom am sekundären C-Atom ersetzt wird als eines am primären C-Atom.',
+    cap:'Rechne mit dem Anteil je H-Atom: 55 % verteilen sich auf 2 H-Atome, 45 % auf 6 H-Atome.',
+    wrong:[[function(x){ return x < 1.5; }, 'Teile den Anteil je H-Atom am sekundären C-Atom durch den Anteil je H-Atom am primären C-Atom.']],
+    ok:'Richtig: (55 : 2) : (45 : 6) ≈ 3,7. Bei Brom ist es etwa das 300-Fache.',
+    tips:['Rechne zuerst 55 : 2 und 45 : 6.', '27,5 : 7,5 ergibt den Faktor.']},
+  'P2': {type:'single', prompt:'Erkläre, warum Chlor weniger selektiv ist als Brom. Wähle die passende Aussage.',
+    options:[
+      {t:'Für das Chlor-Radikal sind beide Aktivierungsenergien sehr klein und fast gleich. Beide Wege laufen deshalb fast gleich schnell.', ok:true},
+      {t:'Das Chlor-Radikal ist träger als das Brom-Radikal.', fb:'Lies das Material noch einmal: Es ist viel reaktionsfreudiger.'},
+      {t:'Chlor bildet keine Radikale.', fb:'Auch die Chlorierung läuft über Radikale.'}],
+    ok:'Richtig. Das reaktionsfreudigere Radikal ist weniger selektiv.',
+    tips:['Lies den Satz zu den Aktivierungsenergien im Material.', 'Wenn zwei Berge fast gleich niedrig sind, kommen über beide fast gleich viele Teilchen.']},
+  'P3': {type:'single', prompt:'Beurteile: Du möchtest gezielt 2-Halogenpropan herstellen. Wähle das geeignete Halogen.',
+    options:[
+      {t:'Chlor, weil es schneller reagiert.', fb:'Schnell ist nicht gezielt. Chlor liefert fast gleich viel von beiden Produkten.'},
+      {t:'Brom, weil fast nur das 2-Halogenpropan entsteht.', ok:true}],
+    ok:'Richtig. Für eine gezielte Synthese ist das selektivere Halogen besser geeignet.',
+    tips:['Vergleiche die Anteile in der Tabelle.', 'Gezielt heißt: möglichst nur ein Produkt.']}
+};
+
+var ST = {
+  start:{nr:'S', icon:'camp', title:'Basislager', where:'Start der Reaktion', time:'ca. 2 min', social:'allein', tasks:[]},
+  s1:{nr:'1', title:'Das Rätsel', where:'Auf dem Weg nach oben', time:'ca. 7 min', social:'gemeinsam', tasks:['1a','1b','1c']},
+  s2:{nr:'2', title:'Expertenpaare', where:'Am Pass', time:'ca. 13 min', social:'Paar A und Paar B', tasks:[]},
+  s3:{nr:'3', title:'Die Leitfrage', where:'Im Tal hinter dem Pass', time:'ca. 9 min', social:'gemeinsam, alle schreiben mit', tasks:[]},
+  ziel:{nr:'Z', icon:'flag', title:'Sicherung im Plenum', where:'Am Ende des Wegs', time:'nach der Lernphase', social:'Plenum', tasks:[]},
+  p1:{nr:'P', title:'Profi: Chlor oder Brom?', where:'Abstecher', time:'wenn Zeit bleibt', social:'gemeinsam', tasks:['P1','P2','P3']}
+};
+var ORDER = ['start','s1','s2','s3','ziel'];
+var POS = {start:[14.75,84,'below','Basislager','Thesen-Check, ca. 2 min'], s1:[28.4,62.6,'right','Das Rätsel','gemeinsam, ca. 7 min'],
+  s2:[40,40.4,'right','Expertenpaare','A Das Radikal, B Der Energieberg'], s3:[60,67.6,'right','Die Leitfrage','gemeinsam, ca. 9 min'],
+  ziel:[90.2,87,'left','Ziel','Sicherung im Plenum']};
+
+/* ---------- Fortschritt ---------- */
+function T(id){ return S.tasks[id] || (S.tasks[id] = {}); }
+function okAll(ids){ return ids.every(function(id){ return S.tasks[id] && S.tasks[id].ok; }); }
+var A_IDS = ['A1','A2','A3'], B_IDS = ['B1','B2','B3','B4'];
+function ownIds(){ return S.paar === 'B' ? B_IDS : A_IDS; }
+function quizIds(){ return S.paar === 'B' ? ['QA1','QA2'] : ['QB1','QB2']; }
+function ready(id){
+  switch (id) {
+    case 'start': return THESEN.every(function(t){ return S.vor[t.id]; });
+    case 's2': return !!S.paar && okAll(ownIds()) && okAll(quizIds());
+    case 's3': return leitOk() && okAll(s3Ids());
+    case 'ziel': return THESEN.every(function(t){ return S.nach[t.id]; });
+    default: return okAll(ST[id].tasks);
+  }
+}
+function leitOk(){ return (S.text.leit || '').trim().length >= 60 && Object.keys(S.krit).some(function(k){ return S.krit[k]; }); }
+function locked(id){ return false; }
+function nextId(){ for (var i = 0; i < ORDER.length; i++) { var id = ORDER[i]; if (!S.done[id] && !locked(id)) return id; } return null; }
+
+/* ---------- Karte ---------- */
+var elStations = document.getElementById('stations');
+function badge(st){
+  var inner = st.icon ? ICON[st.icon] : '<span>' + st.nr + '</span>';
+  return '<span class="dot' + (st.diamond ? ' diamond' : '') + '">' + inner + '<span class="tick">' + ICON.check + '</span></span>';
+}
+function renderMap(){
+  var nx = nextId();
+  elStations.innerHTML = ORDER.map(function(id){
+    var p = POS[id], st = ST[id];
+    var cls = 'stn ' + p[2] + (S.done[id] ? ' done' : '') + (locked(id) ? ' locked' : '') +
+      (id === nx ? ' next' : '');
+    return '<button type="button" class="' + cls + '" style="left:' + p[0] + '%;top:' + p[1] + '%" data-open="' + id + '" aria-label="' + esc(st.title + (S.done[id] ? ', erledigt' : '')) + '">' +
+      badge(st) + '<span class="lab">' + p[3] + '<small>' + p[4] + '</small></span></button>';
+  }).join('');
+  document.querySelectorAll('.pbtn').forEach(function(b){ b.classList.toggle('done', !!S.done[b.dataset.open]); });
+  // Benennung der Wege und Aktivierungsenergien nach Station 2
+  var sec = !!S.done.s2;
+  document.getElementById('lg1').textContent = sec ? 'Weg 1: primäres Radikal' : 'Weg 1';
+  document.getElementById('lg2').textContent = sec ? 'Weg 2: sekundäres Radikal' : 'Weg 2';
+  var ea = document.getElementById('eaGroup'); if (sec) ea.removeAttribute('hidden'); else ea.setAttribute('hidden', '');
+  // Teilchen auf dem Weg
+  var last = 'start';
+  ORDER.forEach(function(id){ if (S.done[id]) last = id; });
+  var p = POS[last], tok = document.getElementById('token');
+  tok.innerHTML = S.done.s3 ? '2-Brompropan' : (S.done.s2 ? fm('C_3H_7·') : fm('Br·'));
+  tok.style.left = (p[0] + (p[2] === 'below' ? 0 : -1)) + '%';
+  tok.style.top = (p[1] - 6.2) + '%';
+  // Seitenleiste
+  document.getElementById('leitText').textContent = LEIT;
+  var n = ORDER.filter(function(id){ return S.done[id]; }).length;
+  document.getElementById('progCount').textContent = n + ' von ' + ORDER.length;
+  document.getElementById('progBar').style.width = (n / ORDER.length * 100) + '%';
+  document.getElementById('steps').innerHTML = ORDER.map(function(id){
+    var st = ST[id], pill;
+    if (S.done[id]) pill = '<span class="pill ok">erledigt</span>';
+    else if (locked(id)) pill = '<span class="pill">nach Station 2</span>';
+    else if (id === nx) pill = '<span class="pill now">jetzt</span>';
+    else pill = '<span class="pill">offen</span>';
+    var mini = st.icon === 'flag' ? 'Z' : (st.icon === 'camp' ? 'S' : st.nr);
+    return '<li><button type="button" data-open="' + id + '"><span class="mini' + (S.done[id] ? ' done' : '') + '">' + mini + '</span><span>' + st.title + '</span>' + pill + '</button></li>';
+  }).join('');
+  var nb = document.getElementById('nextBtn');
+  if (nx) { delete nb.dataset.pop; nb.dataset.open = nx; nb.textContent = (n === 0 ? 'Start: ' : 'Weiter: ') + ST[nx].title; }
+  else {
+    var pn = !S.done.p1 ? 'p1' : '';
+    delete nb.dataset.open; delete nb.dataset.pop;
+    if (pn) { nb.dataset.open = pn; nb.textContent = 'Geschafft! Weiter zur Profi-Station'; }
+    else { nb.dataset.pop = 'ergebnisse'; nb.textContent = 'Alles geschafft: Meine Ergebnisse'; }
+  }
+  var rc = document.getElementById('roleChip');
+  if (S.rolle) { rc.hidden = false; rc.innerHTML = 'Deine Rolle: <b>' + esc(S.rolle) + '</b>'; } else rc.hidden = true;
+}
+
+/* ---------- Aufgaben ---------- */
+function shuffled(t){ return t.shuffle || t.tiles.map(function(_, i){ return i; }); }
+function taskCard(id, label){
+  var t = TASKS[id], s = T(id), body = '';
+  if (t.type === 'single' || t.type === 'multi') {
+    var sel = s.val || [];
+    body = '<div class="opts">' + t.options.map(function(o, i){
+      var on = sel.indexOf(i) >= 0, mark = '';
+      if (s.checked && on) mark = o.ok ? ' right' : ' wrong';
+      return '<button type="button" class="opt' + (t.type === 'single' ? ' radio' : '') + mark + '" aria-pressed="' + on + '" data-a="pick" data-i="' + i + '"><span class="box"></span><span>' + fm(o.t) + '</span></button>';
+    }).join('') + '</div>';
+  } else if (t.type === 'order') {
+    var seq = s.val || [];
+    body = '<div class="seq">' + t.items.map(function(_, k){
+      var it = seq[k], mark = '';
+      if (s.checked && it !== undefined) mark = it === k ? ' right' : ' wrong';
+      return '<button type="button" class="slot' + (it !== undefined ? ' filled' : '') + mark + '" data-a="unslot" data-k="' + k + '"><span class="n">' + (k + 1) + '</span><span>' + (it !== undefined ? fm(t.items[it]) : '<span style="color:var(--muted)">antippen, um eine Karte hierher zu legen</span>') + '</span></button>';
+    }).join('') + '</div>' + (s.ok ? '' : '<div class="seq-pool">' + t.shuffle.map(function(i){
+      return '<button type="button" class="tile" data-a="seq" data-i="' + i + '"' + (seq.indexOf(i) >= 0 ? ' disabled' : '') + '>' + fm(t.items[i]) + '</button>';
+    }).join('') + '</div>');
+  } else if (t.type === 'build') {
+    var v = s.val || [];
+    var slots = [];
+    for (var k = 0; k < t.slots; k++) {
+      var ti = v[k], mk = '';
+      if (s.checked && ti !== undefined && ti !== null) mk = t.correct.indexOf(t.tiles[ti]) >= 0 ? ' right' : ' wrong';
+      slots.push('<button type="button" class="slot' + (ti != null ? ' filled' : '') + mk + '" data-a="unslot" data-k="' + k + '" aria-label="Platz ' + (k + 1) + '">' + (ti != null ? fm(t.tiles[ti]) : '?') + '</button>');
+    }
+    body = '<div class="eq">' + t.lhs.map(function(x){ return '<span>' + fm(x) + '</span>'; }).join(' <span>+</span> ') + ' ' + arrow(t.arrow) + ' ' + slots.join(' <span>+</span> ') + '</div>' +
+      (s.ok ? '' : '<div class="tiles">' + t.tiles.map(function(x, i){ return '<button type="button" class="tile" data-a="tile" data-i="' + i + '"' + (v.indexOf(i) >= 0 ? ' disabled' : '') + '>' + fm(x) + '</button>'; }).join('') + '</div>');
+  } else if (t.type === 'number') {
+    body = '<div class="num-in"><span>' + t.pre + '</span><input id="in-' + id + '" type="text" inputmode="decimal" autocomplete="off" value="' + esc(s.val || '') + '" aria-label="' + esc(t.pre.replace(' =', '')) + '"><span>' + t.unit + '</span></div>' +
+      (t.cap ? '<p class="cap">' + t.cap + '</p>' : '');
+  } else if (t.type === 'htap') {
+    body = molHTML(id, t, s);
+  }
+  var tipN = S.tips[id] || 0, tips = '';
+  for (var j = 0; j < tipN; j++) tips += '<div class="tip"><b>Tipp ' + (j + 1) + ':</b> ' + fm(t.tips[j]) + '</div>';
+  var fb = '';
+  if (s.ok) {
+    fb = '<div class="fb ok">' + fm(t.ok) + '</div>';
+    if (t.reveal) fb += '<div class="plate" style="margin-top:10px"><img src="' + t.reveal[0] + '" alt="' + esc(t.reveal[1]) + '"></div><p class="cap">' + esc(t.reveal[1]) + '</p>';
+  } else if (s.fb) fb = '<div class="fb bad">' + fm(s.fb) + '</div>';
+  var actions = s.ok ? '' : '<div class="actions"><button type="button" class="btn primary small" data-a="check">Prüfen</button>' +
+    '<button type="button" class="btn small" data-a="tip"' + (tipN >= t.tips.length ? ' disabled' : '') + '>' + (tipN === 0 ? 'Tipp 1' : 'Tipp 2') + '</button></div>';
+  return '<article class="task' + (s.ok ? ' ok' : '') + '" data-task="' + id + '"><div class="task-head"><span class="tnum">' + label + '</span>' +
+    (s.ok ? '<span class="pill ok">gelöst</span>' : '<span class="pill">offen</span>') + '</div><p class="prompt">' + fm(t.prompt) + '</p>' + body + tips + fb + actions + '</article>';
+}
+
+function checkTask(id){
+  var t = TASKS[id], s = T(id), v = s.val, ok = false, msg = '';
+  s.checked = true;
+  if (t.type === 'single' || t.type === 'multi') {
+    v = v || [];
+    var want = t.options.map(function(o, i){ return o.ok ? i : -1; }).filter(function(i){ return i >= 0; });
+    ok = v.length === want.length && want.every(function(i){ return v.indexOf(i) >= 0; });
+    if (!ok) {
+      var wrong = v.filter(function(i){ return !t.options[i].ok; });
+      if (!v.length) msg = 'Wähle zuerst eine Antwort aus.';
+      else if (wrong.length) msg = wrong.map(function(i){ return t.options[i].fb; }).join(' ');
+      else msg = 'Das stimmt schon, aber es fehlt noch ein Grund.';
+    }
+  } else if (t.type === 'order') {
+    v = v || [];
+    ok = v.length === t.items.length && v.every(function(x, k){ return x === k; });
+    if (!ok) msg = v.length < t.items.length ? 'Lege zuerst alle Karten.' : 'Die rot markierten Karten liegen noch falsch. Tippe sie an, um sie zurückzulegen.';
+  } else if (t.type === 'build') {
+    v = (v || []).filter(function(x){ return x != null; });
+    var got = v.map(function(i){ return t.tiles[i]; });
+    if (got.length < t.slots) msg = 'Fülle zuerst alle Plätze.';
+    else {
+      var bad = got.filter(function(g){ return t.correct.indexOf(g) < 0; });
+      ok = !bad.length && t.correct.every(function(c){ return got.indexOf(c) >= 0; });
+      if (!ok) msg = bad.length ? (t.fb[bad[0]] || 'Ein Teilchen passt noch nicht.') : 'Ein Teilchen fehlt noch.';
+    }
+  } else if (t.type === 'number') {
+    var x = parseFloat(String(v || '').replace(/\s/g, '').replace(',', '.'));
+    if (isNaN(x)) msg = 'Gib eine Zahl ein.';
+    else {
+      ok = Math.abs(x - t.answer) <= t.tol;
+      if (!ok) { msg = 'Rechne noch einmal nach.'; t.wrong.forEach(function(w){ if (w[0](x)) msg = w[1]; }); }
+    }
+  } else if (t.type === 'htap') {
+    v = v || [];
+    var hs = MOL[t.mol].hs, sel = hs.filter(function(h){ return v.indexOf(h.id) >= 0; });
+    var falsch = sel.filter(function(h){ return !t.want(h); }), soll = hs.filter(t.want);
+    ok = !falsch.length && (t.any ? sel.length > 0 : sel.length === soll.length);
+    if (!ok) msg = falsch.length ? t.wrong : t.miss;
+  }
+  s.ok = ok; s.fb = ok ? '' : msg; s.n = (s.n || 0) + 1;
+  save();
+}
+
+function taskClick(e){
+  var card = e.target.closest('[data-task]'); if (!card) return false;
+  var a = e.target.closest('[data-a]'); if (!a) return false;
+  var id = card.dataset.task, t = TASKS[id], s = T(id), act = a.dataset.a;
+  if (s.ok && act !== 'tip') return true;
+  if (act === 'pick') {
+    var i = +a.dataset.i, v = (s.val || []).slice();
+    if (t.type === 'single') v = [i]; else { var p = v.indexOf(i); if (p >= 0) v.splice(p, 1); else v.push(i); }
+    s.val = v; s.checked = false; s.fb = '';
+  } else if (act === 'seq') {
+    var sq = (s.val || []).slice(); sq.push(+a.dataset.i); s.val = sq; s.checked = false; s.fb = '';
+  } else if (act === 'unslot') {
+    var k = +a.dataset.k, arr = (s.val || []).slice();
+    if (t.type === 'order') arr = arr.slice(0, k).concat(arr.slice(k + 1));
+    else arr[k] = null;
+    s.val = arr; s.checked = false; s.fb = '';
+  } else if (act === 'tile') {
+    var bv = (s.val || []).slice(), free = -1;
+    for (var q = 0; q < t.slots; q++) if (bv[q] == null) { free = q; break; }
+    if (free < 0) return true;
+    bv[free] = +a.dataset.i; s.val = bv; s.checked = false; s.fb = '';
+  } else if (act === 'hsel') {
+    var hv = (s.val || []).slice(), hi = hv.indexOf(a.dataset.h);
+    if (hi >= 0) hv.splice(hi, 1); else hv.push(a.dataset.h);
+    s.val = hv; s.checked = false; s.fb = '';
+  } else if (act === 'check') {
+    if (t.type === 'number') { var inp = document.getElementById('in-' + id); if (inp) s.val = inp.value; }
+    checkTask(id);
+  } else if (act === 'tip') {
+    S.tips[id] = Math.min((S.tips[id] || 0) + 1, t.tips.length);
+  } else return false;
+  save();
+  if (act === 'check' && cur === 's2' && S.tab === 'X' && s.ok && okAll(quizIds())) {
+    var y = sheet.scrollTop; renderSheet(); sheet.scrollTop = y; return true;
+  }
+  rerenderTask(card, id);
+  return true;
+}
+function rerenderTask(card, id){
+  var label = card.querySelector('.tnum').textContent;
+  var tmp = document.createElement('div'); tmp.innerHTML = taskCard(id, label);
+  card.replaceWith(tmp.firstChild);
+  updateFoot();
+}
+
+/* ---------- Simulationen ---------- */
+var sims = [];
+function css(n){ return getComputedStyle(document.documentElement).getPropertyValue(n).trim() || '#888'; }
+/* ---------- Formeln zum Antippen ---------- */
+/* Kette aus n C-Atomen, optional mit Methylgruppe an C2. h.c ist das C-Atom des H-Atoms (0 = Methylgruppe). */
+function kette(n, zweig, nummern){
+  var UC = 74, UH = 58, x0 = 90, y0 = zweig ? 206 : 86, a = [], b = [], hs = [];
+  function hAt(c, x, y, cx, cy){ hs.push({id:'h' + hs.length, c:c, x:x, y:y}); b.push([cx, cy, x, y]); }
+  for (var i = 1; i <= n; i++) {
+    var x = x0 + (i - 1) * UC;
+    a.push({t:'C', x:x, y:y0, n:i});
+    if (i > 1) b.push([x - UC, y0, x, y0]);
+    if (i === 1) hAt(i, x - UH, y0, x, y0);
+    if (i === n) hAt(i, x + UH, y0, x, y0);
+    if (!(zweig && i === 2)) hAt(i, x, y0 - UH, x, y0);
+    hAt(i, x, y0 + UH, x, y0);
+  }
+  if (zweig) {
+    var bx = x0 + UC, by = y0 - 118;
+    a.push({t:'C', x:bx, y:by, n:0});
+    b.push([bx, y0, bx, by]);
+    hAt(0, bx - UH, by, bx, by); hAt(0, bx + UH, by, bx, by); hAt(0, bx, by - UH, bx, by);
+  }
+  return {atoms:a, bonds:b, hs:hs, w:x0 * 2 + (n - 1) * UC, h:y0 + UH + (nummern ? 76 : 44), num:nummern, y0:y0};
+}
+var MOL = {propan:kette(3, false, true), heptan:kette(7, false, true), methylbutan:kette(4, true, false)};
+function molHTML(id, t, s){
+  var m = MOL[t.mol], sel = s.val || [];
+  var bonds = m.bonds.map(function(l){
+    var dx = l[2] - l[0], dy = l[3] - l[1], d = Math.hypot(dx, dy), ux = dx / d, uy = dy / d;
+    return '<line class="bd" x1="' + (l[0] + ux * 15) + '" y1="' + (l[1] + uy * 15) + '" x2="' + (l[2] - ux * 15) + '" y2="' + (l[3] - uy * 15) + '"/>';
+  }).join('');
+  var atoms = m.atoms.map(function(c){
+    return '<text x="' + c.x + '" y="' + c.y + '">C</text>' + (m.num && c.n ? '<text class="cn" x="' + c.x + '" y="' + (m.y0 + 58 + 38) + '">C' + c.n + '</text>' : '');
+  }).join('');
+  var hs = m.hs.map(function(h){
+    var on = sel.indexOf(h.id) >= 0, mk = (s.checked && on) ? (t.want(h) ? ' right' : ' wrong') : '';
+    return '<g class="hb' + mk + '" role="button" tabindex="0" aria-pressed="' + on + '" aria-label="H-Atom an C' + (h.c || ' der Methylgruppe') + '" data-a="hsel" data-h="' + h.id + '">' +
+      '<circle class="hit" cx="' + h.x + '" cy="' + h.y + '" r="28"/><circle class="ring" cx="' + h.x + '" cy="' + h.y + '" r="19"/><text x="' + h.x + '" y="' + h.y + '">H</text></g>';
+  }).join('');
+  return '<svg class="hmol" viewBox="0 0 ' + m.w + ' ' + m.h + '" style="max-width:' + Math.round(m.w * .95) + 'px" aria-label="Valenzstrichformel">' + bonds + atoms + hs + '</svg>';
+}
+
+/* ---------- Alkylgruppen-Schalter ---------- */
+var ALK = 0;
+var ALK_N = [['Methyl-Radikal', 'keine Alkylgruppe', 100, 25], ['primäres Radikal', 'eine Alkylgruppe', 72, 50], ['sekundäres Radikal', 'zwei Alkylgruppen', 48, 75], ['tertiäres Radikal', 'drei Alkylgruppen', 26, 100]];
+function alkylInner(){
+  var n = ALK, r = ALK_N[n], cx = 200, cy = 108;
+  var pos = [[cx, 34, 'top'], [92, cy, 'left'], [cx, 182, 'bot']];
+  function sub(i){
+    var alk = i < n, p = pos[i], lab = alk ? 'CH<tspan dy="6" font-size="14">3</tspan>' : 'H';
+    var sx = p[2] === 'left' ? cx - 18 : cx, sy = p[2] === 'top' ? cy - 18 : (p[2] === 'bot' ? cy + 18 : cy);
+    var ex = p[2] === 'left' ? p[0] + (alk ? 30 : 16) : cx, ey = p[2] === 'top' ? p[1] + 16 : (p[2] === 'bot' ? p[1] - 16 : cy);
+    var out = '<line class="bd" x1="' + sx + '" y1="' + sy + '" x2="' + ex + '" y2="' + ey + '"/><text x="' + p[0] + '" y="' + p[1] + '">' + lab + '</text>';
+    if (alk) {
+      if (p[2] === 'left') out += '<line class="ie" x1="' + (ex + 4) + '" y1="' + (cy - 12) + '" x2="' + (sx - 4) + '" y2="' + (cy - 12) + '" marker-end="url(#ie)"/>';
+      else out += '<line class="ie" x1="' + (cx + 12) + '" y1="' + (ey + (p[2] === 'top' ? 2 : -2)) + '" x2="' + (cx + 12) + '" y2="' + (sy + (p[2] === 'top' ? -4 : 4)) + '" marker-end="url(#ie)"/>';
+    }
+    return out;
+  }
+  var halo = 66 - n * 12;
+  return '<div class="seg" role="group" aria-label="Radikal wählen">' + ['Methyl', 'primär', 'sekundär', 'tertiär'].map(function(x, i){
+      return '<button type="button" data-a="alkyl" data-k="' + i + '" aria-pressed="' + (i === n) + '">' + x + '</button>'; }).join('') + '</div>' +
+    '<svg viewBox="0 0 400 216" role="img" aria-label="' + r[0] + ' mit ' + r[1] + '"><defs><marker id="ie" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 L10 5 L0 10 Z" style="fill:var(--ozone)"/></marker></defs>' +
+    '<circle class="halo" cx="' + cx + '" cy="' + cy + '" r="' + halo + '"/>' + sub(0) + sub(1) + sub(2) +
+    '<text x="' + cx + '" y="' + cy + '">C</text><circle class="edot" cx="' + (cx + 20) + '" cy="' + cy + '" r="5"/></svg>' +
+    '<p class="alk-name"><b>' + r[0] + '</b>, ' + r[1] + '</p>' +
+    '<div class="gauge"><span>Elektronenmangel</span><span class="b"><i style="width:' + r[2] + '%"></i></span><span>Stabilität</span><span class="b st"><i style="width:' + r[3] + '%"></i></span></div>' +
+    '<p class="cap" style="margin:0">Die Pfeile zeigen den +I-Effekt. Die Balken zeigen nur die Richtung, sie sind keine Messwerte.</p>';
+}
+
+/* ---------- Simulation: Teilchen gegen den Berg ---------- */
+function bergSim(root){
+  var cv = root.querySelector('canvas'), ctx = cv.getContext('2d'), W = 600, H = 300;
+  var dpr = Math.min(window.devicePixelRatio || 1, 2);
+  cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  var runBtn = root.querySelector('[data-sim="run"]'), msg = root.querySelector('.sim-msg'), cnt = root.querySelectorAll('.counter');
+  var BASE = 238, PX = 52, MAX = 300;      // PX: Höhe je Energieeinheit, gleicher Maßstab für beide Berge
+  var PAN = [{x:10, w:284, bar:3.4, name:'Weg 1'}, {x:306, w:284, bar:1.4, name:'Weg 2'}];
+  var parts, tries, over, clock, running = false, raf = 0, last = 0;
+  function g(u){ return Math.exp(-Math.pow((u - .5) / .16, 2)); }
+  function yOf(p, u){ return BASE - p.bar * PX * g(u); }
+  function reset(){ parts = []; tries = [0, 0]; over = [0, 0]; clock = 0; msg.hidden = true; setRun(false); upd(); draw(); }
+  function upd(){ PAN.forEach(function(p, i){ cnt[i].textContent = p.name + ': ' + over[i] + ' von ' + tries[i] + ' Teilchen kommen über den Berg'; }); }
+  function setRun(on){ running = on; runBtn.textContent = on ? 'Pause' : (tries[0] >= MAX ? 'Neu starten' : (tries[0] ? 'Weiter' : 'Start')); if (on) { last = 0; raf = requestAnimationFrame(loop); } else cancelAnimationFrame(raf); }
+  function spawn(i){ tries[i]++; parts.push({p:i, u:0, dir:1, e:-Math.log(1 - Math.random()), spd:.42 + Math.random() * .2, st:0}); }
+  function step(dt){
+    clock += dt;
+    while (clock > .085 && tries[0] < MAX) { clock -= .085; spawn(0); spawn(1); upd(); }
+    parts.forEach(function(q){
+      var p = PAN[q.p];
+      q.u += q.dir * q.spd * dt;
+      if (q.dir > 0 && q.u < .5 && g(q.u) * p.bar >= q.e) { q.dir = -1; q.st = 2; }       // Energie reicht nicht, das Teilchen rollt zurück
+      if (q.dir > 0 && q.u >= .5 && q.st === 0) q.st = 1;
+      if (q.st === 1 && q.u >= 1) { over[q.p]++; q.gone = true; upd(); }
+      if (q.u <= 0 && q.dir < 0) q.gone = true;
+    });
+    parts = parts.filter(function(q){ return !q.gone; });
+    if (tries[0] >= MAX && !parts.length) { setRun(false); msg.hidden = false; msg.textContent = 'Durchlauf beendet. Vergleiche die beiden Zähler.'; }
+  }
+  function draw(){
+    var ink = css('--ink'), mut = css('--muted'), line = css('--line'), route = css('--route');
+    ctx.clearRect(0, 0, W, H);
+    PAN.forEach(function(p){
+      ctx.beginPath(); ctx.moveTo(p.x, BASE);
+      for (var k = 0; k <= 60; k++) { var u = k / 60; ctx.lineTo(p.x + u * p.w, yOf(p, u)); }
+      ctx.lineTo(p.x + p.w, BASE + 40); ctx.lineTo(p.x, BASE + 40); ctx.closePath();
+      ctx.fillStyle = css('--ridge'); ctx.fill();
+      ctx.beginPath();
+      for (var j = 0; j <= 60; j++) { var v = j / 60; ctx[j ? 'lineTo' : 'moveTo'](p.x + v * p.w, yOf(p, v)); }
+      ctx.strokeStyle = ink; ctx.lineWidth = 2.2; ctx.stroke();
+      ctx.fillStyle = ink; ctx.font = '700 15px ' + css('--f-body'); ctx.fillText(p.name, p.x + 8, 22);
+    });
+    parts.forEach(function(q){
+      var p = PAN[q.p];
+      ctx.beginPath(); ctx.arc(p.x + q.u * p.w, yOf(p, q.u) - 6, 4.2, 0, 6.2832);
+      ctx.fillStyle = q.st === 1 ? route : (q.st === 2 ? line : mut); ctx.fill();
+    });
+  }
+  function loop(ts){ if (!running) return; var dt = last ? Math.min((ts - last) / 1000, .05) : 0; last = ts; step(dt); draw(); if (running) raf = requestAnimationFrame(loop); }
+  root.addEventListener('click', function(e){
+    var b = e.target.closest('[data-sim]'); if (!b) return;
+    if (b.dataset.sim === 'run') { if (tries[0] >= MAX) reset(); setRun(!running); }
+    else if (b.dataset.sim === 'reset') reset();
+  });
+  reset();
+  sims.push(function(){ setRun(false); });
+}
+function stopSims(){ sims.forEach(function(f){ f(); }); sims = []; }
+function simHTML(){
+  return '<div class="sim" data-berg="1"><canvas width="600" height="300" aria-label="Simulation: Teilchen laufen gegen zwei unterschiedlich hohe Berge"></canvas>' +
+    '<div class="sim-row"><button type="button" class="btn small primary" data-sim="run">Start</button><button type="button" class="btn small" data-sim="reset">Neu</button></div>' +
+    '<p class="counter"></p><p class="counter"></p>' +
+    '<div class="legend"><span><i style="background:var(--muted)"></i>unterwegs</span><span><i style="background:var(--route)"></i>über den Berg</span><span><i style="background:var(--line)"></i>rollt zurück</span></div>' +
+    '<div class="sim-msg" hidden></div><p class="cap" style="margin:0">Modell: Beide Wege starten bei gleicher Temperatur. Die Zahlen sind nicht maßstäblich.</p></div>';
+}
+
+/* ---------- Energiediagramm ---------- */
+function energieSVG(){
+  return '<svg class="dia" viewBox="0 0 520 300" role="img" aria-label="Energiediagramm: Der Weg zum sekundären Radikal hat die kleinere Aktivierungsenergie und endet tiefer als der Weg zum primären Radikal.">' +
+    '<defs><marker id="d1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 Z" style="fill:var(--muted)"/></marker>' +
+    '<marker id="d2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 Z" style="fill:var(--ink)"/></marker></defs>' +
+    '<g fill="none" stroke-width="2" style="stroke:var(--muted)"><line x1="34" y1="268" x2="34" y2="16" marker-end="url(#d1)"/><line x1="34" y1="268" x2="508" y2="268" marker-end="url(#d1)"/></g>' +
+    '<text x="14" y="24" font-weight="700">E</text><text x="506" y="288" text-anchor="end" class="m">Reaktionsweg</text>' +
+    '<path d="M50 236 L118 236 C160 236 176 58 226 58 C280 58 282 130 346 130 L366 130" fill="none" stroke-width="2.6" stroke-dasharray="9 7" style="stroke:var(--muted)"/>' +
+    '<path d="M50 236 L118 236 C160 236 176 100 226 100 C280 100 282 168 346 168 L366 168" fill="none" stroke-width="3.2" style="stroke:var(--route)"/>' +
+    '<g stroke-width="1.5" stroke-dasharray="4 5" style="stroke:var(--line)"><line x1="66" y1="58" x2="222" y2="58"/><line x1="98" y1="100" x2="222" y2="100"/></g>' +
+    '<g fill="none" stroke-width="2" style="stroke:var(--ink)"><line x1="70" y1="232" x2="70" y2="62" marker-end="url(#d2)"/><line x1="102" y1="232" x2="102" y2="104" marker-end="url(#d2)"/></g>' +
+    '<text x="44" y="150" font-weight="700">E<tspan dy="4" font-size="10">A</tspan></text><text x="108" y="176" font-weight="700">E<tspan dy="4" font-size="10">A</tspan></text>' +
+    '<text x="50" y="258">Propan + Br<tspan class="rt">·</tspan></text><text x="226" y="46" text-anchor="middle" class="m">Weg 1</text><text x="226" y="120" text-anchor="middle" class="m">Weg 2</text>' +
+    '<text x="372" y="126">primäres</text><text x="372" y="142">Radikal + HBr</text><text x="372" y="184" font-weight="700">sekundäres</text><text x="372" y="200" font-weight="700">Radikal + HBr</text></svg>';
+}
+
+/* ---------- Stationen ---------- */
+var sheet = document.getElementById('sheet'), cur = null;
+function mat(tag, title, html){ return '<section class="mat"><h4>' + (tag ? '<span class="tag">' + tag + '</span>' : '') + '<span>' + title + '</span></h4>' + html + '</section>'; }
+function checkItem(on, label, a, k){ return '<button type="button" class="check" aria-pressed="' + !!on + '" data-a="' + a + '" data-k="' + k + '"><span class="box">' + ICON.check + '</span><span>' + fm(label) + '</span></button>'; }
+function thesenHTML(which){
+  var store = S[which];
+  return '<div class="thesen">' + THESEN.map(function(t, i){
+    return '<div class="these"><span><b>' + (i + 1) + '</b>&nbsp; ' + esc(t.text) + '</span><span class="tw">' +
+      ['ja', 'nein'].map(function(v){ return '<button type="button" class="yn" aria-pressed="' + (store[t.id] === v) + '" data-a="these" data-w="' + which + '" data-t="' + t.id + '" data-v="' + v + '">' + (v === 'ja' ? 'stimmt' : 'stimmt nicht') + '</button>'; }).join('') +
+      '</span></div>';
+  }).join('') + '</div>';
+}
+function eKarte(p){
+  var titel = p === 'A' ? 'Erklär-Karte Paar A: Das Radikal' : 'Erklär-Karte Paar B: Der Energieberg';
+  var zeilen = p === 'A' ?
+    ['Dem Radikal-C-Atom fehlt ein Elektron zum Oktett (Elektronenmangel).', 'Jede benachbarte Alkylgruppe schiebt Elektronendichte heran (+I-Effekt).', 'Zwei Alkylgruppen verringern den Mangel stärker als eine.', 'Ergebnis: Das sekundäre Radikal ist stabiler als das primäre.'] :
+    ['Schritt 1 entscheidet: Br· + C_3H_8 → HBr + C_3H_7·', 'Für das sekundäre Radikal ist die Aktivierungsenergie kleiner.', 'Mehr Teilchen besitzen genug Energie, dieser Weg läuft schneller.', 'Ergebnis: Beide Wege laufen, der schnellere liefert vor allem 2-Brompropan.'];
+  return '<div class="ekarte"><h4>' + titel + '</h4><ol>' + zeilen.map(function(x){ return '<li>' + fm(x) + '</li>'; }).join('') + '</ol></div>';
+}
+function kettenHTML(){ return '<ol class="kette">' + KETTE.map(function(x){ return '<li>' + x + '</li>'; }).join('') + '</ol>'; }
+function s3Ids(){ return ['3a', '3b', 'T1', 'T2', 'T3']; }
+
+function body(id){
+  var L = '', R = '', single = false;
+  if (id === 'start') {
+    L = mat('', 'So funktioniert die Lernweltkarte', '<ol>' + [
+      'Die Karte zeigt die Energielandschaft der Bromierung. Ihr folgt dem Brom-Radikal vom Start bis zum Produkt: drei Stationen, dann die Sicherung.',
+      'Bei Station 2 teilt ihr euch in zwei Expertenpaare auf und erklärt euch danach gegenseitig eure Ergebnisse.',
+      'Jede Aufgabe prüft ihr selbst mit „Prüfen“. Kommt ihr nicht weiter, nutzt ihr die Hilfe-Treppe.',
+      'Nach jeder Station übertragt ihr euer Ergebnis auf das Ergebnisblatt.',
+      'Fertig vor der Zeit? Dann wartet die Profi-Station.'].map(function(x){ return '<li>' + x + '</li>'; }).join('') + '</ol>') +
+      mat('', 'Deine Rolle', '<p>Verteilt die Rollen in eurer Gruppe. In einer Dreiergruppe übernimmt eine Person zwei Rollen.</p><div class="roles">' + ROLLEN.map(function(r){
+        return '<button type="button" class="role" aria-pressed="' + (S.rolle === r[0]) + '" data-a="rolle" data-k="' + esc(r[0]) + '"><b>' + r[0] + '</b><span>' + r[1] + '</span></button>'; }).join('') + '</div>');
+    R = '<article class="task' + (ready('start') ? ' ok' : '') + '"><div class="task-head"><span class="tnum">Thesen-Check vorher</span><span class="pill">allein</span></div>' +
+      '<p class="prompt">Kreuze allein an: stimmt oder stimmt nicht? Es gibt hier noch kein Richtig oder Falsch. Am Ende der Stunde kreuzt du noch einmal an.</p>' + thesenHTML('vor') + '</article>';
+  } else if (id === 's1') {
+    L = mat('M1', 'Zwei Produkte aus Propan', '<p>Am kleinen Propan-Molekül lässt sich das Rätsel aus dem Heptan-Versuch leichter untersuchen. Brom reagiert im Licht mit Propan. Dabei wird ein H-Atom durch ein Br-Atom ersetzt. Es entstehen zwei Produkte: <b>1-Brompropan</b> und <b>2-Brompropan</b>.</p><p>Wäre jedes H-Atom gleich leicht zu ersetzen, hinge die Produktverteilung nur von der Anzahl der H-Atome ab. Das nennt man statistische Erwartung.</p>') +
+      mat('M2', 'Primär, sekundär, tertiär', '<p>Ein <b>primäres</b> C-Atom hat ein weiteres C-Atom als Nachbarn, ein <b>sekundäres</b> zwei und ein <b>tertiäres</b> drei. In Propan sind C1 und C3 primär, C2 ist sekundär.</p>') +
+      mat('M3', 'Die Messung', '<div class="tblwrap"><table class="tbl"><tr><th>Produkt</th><th>gemessener Anteil</th></tr><tr><td>1-Brompropan</td><td class="num">≈ 1 %</td></tr><tr><td>2-Brompropan</td><td class="num">≈ 99 %</td></tr></table></div><p class="cap">Fokus Chemie Qualifikationsphase, S. 172</p>');
+    R = taskCard('1a', 'Aufgabe 1a') + taskCard('1b', 'Aufgabe 1b') + taskCard('1c', 'Aufgabe 1c');
+  } else if (id === 's2') {
+    var tab = S.tab || S.paar || '';
+    var pick = '<div class="pairpick">' +
+      '<button type="button" data-a="paar" data-k="A" aria-pressed="' + (S.paar === 'A') + '"><b>Ich bin in Paar A</b><span>Das Radikal: Alkylgruppen verringern den Elektronenmangel.</span></button>' +
+      '<button type="button" data-a="paar" data-k="B" aria-pressed="' + (S.paar === 'B') + '"><b>Ich bin in Paar B</b><span>Der Energieberg: Zwei Wege laufen gleichzeitig.</span></button></div>';
+    if (!S.paar) {
+      single = true;
+      L = mat('', 'Teilt euch auf', '<p>Teilt eure Gruppe in zwei Expertenpaare auf. <b>Paar A</b> untersucht, warum manche Radikale stabiler sind als andere. <b>Paar B</b> untersucht, welche Folgen das für die Reaktion hat. Danach erklärt ihr euch gegenseitig eure Ergebnisse.</p><p>In einer Dreiergruppe arbeitet eine Person allein als Paar A. Teil A ist kürzer.</p>' + pick);
+    } else {
+      var seg = '<div class="seg" role="group" aria-label="Teil wählen">' +
+        [['A', 'A: Das Radikal'], ['B', 'B: Der Energieberg'], ['X', 'Austausch']].map(function(x){ return '<button type="button" data-a="tab" data-k="' + x[0] + '" aria-pressed="' + (tab === x[0]) + '">' + x[1] + '</button>'; }).join('') + '</div>';
+      if (tab === 'A') {
+        L = seg + mat('MA1', 'Radikale haben Elektronenmangel', '<p>Reißt ein Brom-Radikal ein H-Atom aus dem Propan-Molekül, bleibt ein <b>Alkyl-Radikal</b> zurück. Es besitzt ein ungepaartes Elektron. Dem Radikal-C-Atom fehlt ein Elektron zum Oktett, es herrscht <b>Elektronenmangel</b>. Deshalb sind Radikale energiereich und reaktiv.</p>') +
+          mat('MA2', 'Der +I-Effekt', '<p>Atome und Atomgruppen beeinflussen über die Bindungen hinweg die Elektronenverteilung im Molekül. Diese Wirkung heißt <b>induktiver Effekt (I-Effekt)</b>. Alkylgruppen wie ' + fm('–CH_3') + ' schieben Elektronendichte zu ihrem Nachbaratom: Sie haben einen <b>+I-Effekt</b>. Dabei wandert kein ganzes Elektron.</p><p>Jede benachbarte Alkylgruppe verringert den Elektronenmangel am Radikal-C-Atom ein wenig. Je mehr Alkylgruppen benachbart sind, desto <b>stabiler</b>, also energieärmer, ist das Radikal. Auch ein stabileres Radikal bleibt ein Radikal und reagiert weiter.</p>') +
+          mat('MA3', 'Alkylgruppen-Schalter', '<p>Wechsle zwischen den Radikalen und beobachte die Pfeile und die Balken.</p><div class="alk" id="alkBox">' + alkylInner() + '</div>');
+        R = (S.paar !== 'A' ? '<p class="cap">Das ist der Teil von Paar A. Du darfst mitlesen, gelöst wird er von Paar A.</p>' : '') + A_IDS.map(function(x, i){ return taskCard(x, 'Aufgabe A' + (i + 1)); }).join('');
+      } else if (tab === 'B') {
+        L = seg + mat('MB1', 'Hier fällt die Entscheidung', '<p>Die Bromierung läuft als Kettenreaktion ab. Im <b>ersten Schritt</b> reißt ein Brom-Radikal ein H-Atom aus dem Propan-Molekül. Es entstehen Bromwasserstoff und ein Propyl-Radikal. Im <b>zweiten Schritt</b> reagiert dieses Radikal mit einem Brom-Molekül. Es entstehen Brompropan und wieder ein Brom-Radikal. Das Br-Atom bindet an das C-Atom, das das ungepaarte Elektron trägt.</p><p>Welches Produkt entsteht, entscheidet sich also im ersten Schritt.</p>') +
+          mat('MB2', 'Das Energiediagramm', '<p>Für den ersten Schritt gibt es zwei Wege: <b>Weg 1</b> führt zum primären Radikal, <b>Weg 2</b> zum sekundären Radikal.</p><div class="plate-svg">' + energieSVG() + '</div><p style="margin-top:8px">Je kleiner die Aktivierungsenergie, desto mehr Teilchen besitzen bei gleicher Temperatur genug Energie für die Reaktion. Beide Wege laufen gleichzeitig ab und konkurrieren miteinander.</p>') +
+          mat('MB3', 'Simulation: Teilchen gegen den Berg', simHTML());
+        R = (S.paar !== 'B' ? '<p class="cap">Das ist der Teil von Paar B. Du darfst mitlesen, gelöst wird er von Paar B.</p>' : '') + B_IDS.map(function(x, i){ return taskCard(x, 'Aufgabe B' + (i + 1)); }).join('');
+      } else {
+        var own = okAll(ownIds());
+        L = seg + mat('', 'Austausch', '<ol><li>Erklärt euch gegenseitig eure Ergebnisse, je 3 Minuten. Nutzt dazu eure Erklär-Karte.</li><li>Danach löst jede Person allein zwei Aufgaben zum Teil des anderen Paars. Klappt etwas nicht, fragt ihr beim anderen Paar nach.</li></ol>') +
+          (own ? eKarte(S.paar) : mat('', 'Deine Erklär-Karte', '<p>Sie erscheint, sobald dein Paar alle Aufgaben von Teil ' + S.paar + ' gelöst hat.</p>')) +
+          (own && okAll(quizIds()) ? mat('', 'Zum Schluss: die Erklärkette', '<p>Eure beiden Teile ergeben zusammen eine Kette. Übertragt sie auf das Ergebnisblatt.</p>' + kettenHTML()) : '') +
+          '<p class="cap">Paar gewechselt? <button type="button" class="btn small ghost" data-a="paar-reset">Paar neu wählen</button></p>';
+        R = own ? quizIds().map(function(x, i){ return taskCard(x, 'Teil ' + (S.paar === 'A' ? 'B' : 'A') + ' verstanden? ' + (i + 1)); }).join('') :
+          '<article class="task"><p class="prompt">Löst zuerst die Aufgaben eures Teils.</p><button type="button" class="btn primary small" data-a="tab" data-k="' + S.paar + '">Zu Teil ' + S.paar + '</button></article>';
+      }
+    }
+  } else if (id === 's3') {
+    var t3 = S.tab3 || 'H';
+    var seg3 = '<div class="seg" role="group" aria-label="Schritt wählen">' +
+      [['H', '1 Heptan'], ['L', '2 Leitfrage'], ['T', '3 Transfer']].map(function(x){ return '<button type="button" data-a="tab3" data-k="' + x[0] + '" aria-pressed="' + (t3 === x[0]) + '">' + x[1] + '</button>'; }).join('') + '</div>';
+    if (t3 === 'H') {
+      L = seg3 + mat('M4', 'Zurück zum Heptan', '<p>In der Versuchsstunde reagierte Heptan im Licht mit Brom. Möglich sind vier Monobromheptane: 1-, 2-, 3- und 4-Bromheptan.</p><p>Mit dem Gaschromatografen findet man nur Spuren von <b>1-Bromheptan (unter 1 %)</b>. Über 99 % des Gemischs sind 2-, 3- und 4-Bromheptan. Schulbuch und 3D-Animation zeigten der Einfachheit halber 1-Bromheptan.</p>');
+      R = taskCard('3a', 'Aufgabe 3a') + taskCard('3b', 'Aufgabe 3b');
+    } else if (t3 === 'L') {
+      var len = (S.text.leit || '').trim().length;
+      L = seg3 + mat('', 'Eure Bausteine', '<p><b>Die Erklärkette aus Station 2:</b></p>' + kettenHTML()) + eKarte('A') + eKarte('B');
+      R = '<article class="task' + (leitOk() ? ' ok' : '') + '" id="leitTask"><div class="task-head"><span class="tnum">Aufgabe 3c</span><span class="pill">alle schreiben mit</span></div>' +
+        '<p class="prompt">' + LEIT + ' Formuliert gemeinsam drei bis vier Sätze. Jede Person schreibt auf ihrem iPad mit.</p>' +
+        '<textarea class="ta" id="leitTa" placeholder="Statistisch wären …">' + esc(S.text.leit || '') + '</textarea>' +
+        '<div class="chiprow"><span class="lbl">Wortspeicher</span>' + WORTE.map(function(w){ return '<button type="button" class="wchip" data-a="ins" data-w="' + esc(w) + '">' + w + '</button>'; }).join('') + '</div>' +
+        '<div class="chiprow"><span class="lbl">Satzanfänge</span>' + ANFAENGE.map(function(w){ return '<button type="button" class="wchip" data-a="ins" data-w="' + esc(w.replace(/ …$/, ' ')) + '">' + w + '</button>'; }).join('') + '</div>' +
+        '<div id="leitCheck"' + (len >= 60 ? '' : ' hidden') + '><p class="prompt" style="margin-top:16px">Prüft eure Antwort. Hakt ab, was sie schon enthält:</p><div class="checks">' +
+        KRIT.map(function(k, i){ return checkItem(S.krit[i], k, 'krit', i); }).join('') + '</div>' +
+        '<div class="actions"><button type="button" class="btn small" data-a="muster">' + (S.muster ? 'Musterantwort ausblenden' : 'Musterantwort zeigen') + '</button></div>' +
+        (S.muster ? '<div class="fb ok"><b>Musterantwort:</b> ' + esc(MUSTER) + '</div>' : '') + '</div>' +
+        '<p class="cap" id="leitHint"' + (len >= 60 ? ' hidden' : '') + '>Die Prüfliste erscheint, sobald ihr etwa zwei Sätze geschrieben habt.</p></article>';
+    } else {
+      L = seg3 + mat('', 'Stimmt die Erklärung auch für andere Alkane?', '<p>Eine gute Erklärung gilt nicht nur für einen Stoff. Prüft sie an zwei weiteren Alkanen: an Butan und an 2-Methylbutan.</p><p>2-Methylbutan besitzt ein tertiäres C-Atom. Die Aufgabe stammt aus dem Buch (Fokus Chemie Qualifikationsphase, S. 172, Aufgabe 1).</p>');
+      R = taskCard('T1', 'Aufgabe 3d') + taskCard('T2', 'Aufgabe 3e') + taskCard('T3', 'Aufgabe 3f');
+    }
+  } else if (id === 'p1') {
+    L = mat('', 'Auch Chlor reagiert im Licht mit Alkanen', '<p>Bei Propan entstehen bei Raumtemperatur aber ganz andere Anteile:</p><div class="tblwrap"><table class="tbl"><tr><th>Halogen</th><th>1-Halogenpropan</th><th>2-Halogenpropan</th></tr><tr><td>Chlor</td><td class="num">≈ 45 %</td><td class="num">≈ 55 %</td></tr><tr><td>Brom</td><td class="num">≈ 1 %</td><td class="num">≈ 99 %</td></tr></table></div>') +
+      mat('', 'Reaktionsfreudig, aber wenig selektiv', '<p>Das Chlor-Radikal ist viel reaktionsfreudiger als das Brom-Radikal. Reißt es ein H-Atom ab, wird Energie frei. Beim Brom-Radikal muss dafür Energie aufgewendet werden. Für das Chlor-Radikal sind deshalb beide Aktivierungsenergien sehr klein und fast gleich groß.</p><p><b>Selektiv</b> heißt: Ein Stoff reagiert bevorzugt an einer bestimmten Stelle.</p>');
+    R = taskCard('P1', 'Aufgabe P1') + taskCard('P2', 'Aufgabe P2') + taskCard('P3', 'Aufgabe P3');
+  } else if (id === 'ziel') {
+    L = mat('', 'Sicherung im Plenum', '<p>Wartet auf das Signal eurer Lehrkraft. Gelost wird, wer welchen Teil vorstellt: <b>+I-Effekt</b>, <b>Energiediagramm</b> oder <b>Leitfrage</b>. Jede Person sollte jeden Teil erklären können.</p><p>Legt euer Ergebnisblatt bereit: In der Sicherung korrigiert ihr mit einer anderen Farbe. Zum Schluss schreibst du deine Take-Home-Message auf das Post-it.</p>' +
+      (S.done.p1 ? '' : '<p>Fertig vor der Zeit? Bis zum Signal wartet die Profi-Station.</p><button type="button" class="btn small" data-a="goto" data-k="p1">Zur Profi-Station</button>'));
+    var allN = THESEN.every(function(t){ return S.nach[t.id]; });
+    R = '<article class="task' + (allN ? ' ok' : '') + '"><div class="task-head"><span class="tnum">Thesen-Check nachher</span><span class="pill">erst auf Ansage</span></div>' +
+      '<p class="prompt">Kreuze noch einmal allein an. Danach siehst du deinen Vergleich.</p>' + thesenHTML('nach') + '</article>';
+    if (allN) {
+      R += '<article class="task"><div class="task-head"><span class="tnum">Dein Vergleich</span></div><div class="tblwrap"><table class="tbl cmp"><tr><th>These</th><th>vorher</th><th>nachher</th><th>fachlich</th></tr>' +
+        THESEN.map(function(t, i){
+          function w(v){ return v ? (v === 'ja' ? 'stimmt' : 'stimmt nicht') : '–'; }
+          return '<tr><td><b>' + (i + 1) + '</b> ' + esc(t.text) + '<div class="cap">' + esc(t.why) + '</div></td><td>' + w(S.vor[t.id]) + '</td><td>' + w(S.nach[t.id]) + (S.vor[t.id] && S.vor[t.id] !== S.nach[t.id] ? ' <span class="mk" style="color:var(--hint)">umgedacht</span>' : '') + '</td><td><b>' + w(t.ok) + '</b></td></tr>';
+        }).join('') + '</table></div></article>';
+    }
+  }
+  return {L:L, R:R, single:single};
+}
+
+function renderSheet(){
+  var id = cur, st = ST[id], b = body(id);
+  var head = '<header class="sheet-head"><button type="button" class="btn small" data-a="close">Zur Karte</button>' +
+    '<div class="sh-title">' + badge(st).replace('<span class="tick">' + ICON.check + '</span>', '') + '<div><div class="eyebrow">' + st.where + '</div><h2 id="shTitle">' + st.title + '</h2></div></div>' +
+    '<div class="chips"><span class="chip">' + st.time + '</span><span class="chip">' + st.social + '</span></div></header>';
+  var main = b.single ? '<div class="sheet-body single"><div class="col">' + b.L + '</div></div>' :
+    '<div class="sheet-body"><div class="col"><h3>Material</h3>' + b.L + '</div><div class="col"><h3>Aufgaben</h3>' + b.R + '</div></div>';
+  stopSims();
+  sheet.innerHTML = head + main + '<footer class="sheet-foot" id="foot"></footer>';
+  sheet.querySelectorAll('[data-berg]').forEach(function(el){ bergSim(el); });
+  updateFoot();
+}
+var KASTEN = {s1:'Kasten 1 (Statistik gegen Messung)', s2:'Kasten 2 (Erklärkette, beide Teile)', s3:'Kasten 3 (Antwort und Transfer)'};
+function canFinish(id){ return ready(id) && (!KASTEN[id] || !!S.trans[id]); }
+function updateFoot(){
+  var f = document.getElementById('foot'); if (!f) return;
+  var id = cur, isDone = !!S.done[id], ok = ready(id), fin = canFinish(id);
+  var hint;
+  if (isDone) hint = 'Diese Station habt ihr abgeschlossen.';
+  else if (fin) hint = 'Alles erledigt. Schließt die Station ab.';
+  else if (ok) hint = 'Übertragt jetzt euer Ergebnis auf das Ergebnisblatt und hakt es ab.';
+  else if (id === 's2') hint = !S.paar ? 'Wählt zuerst euer Paar.' : (!okAll(ownIds()) ? 'Löst zuerst alle Aufgaben von Teil ' + S.paar + '.' : 'Jetzt der Austausch: Löse die zwei Aufgaben zum anderen Teil.');
+  else if (id === 's3') hint = !okAll(['3a', '3b']) ? 'Löst zuerst die Aufgaben zu Heptan.' : (!leitOk() ? 'Schreibt jetzt eure Antwort auf die Leitfrage.' : 'Prüft eure Erklärung zum Schluss im Transfer.');
+  else hint = 'Löst alle Aufgaben dieser Station.';
+  var tr = KASTEN[id] ? checkItem(S.trans[id], 'Ergebnis übertragen: ' + KASTEN[id] + ' auf dem Ergebnisblatt', 'trans', id) : '';
+  f.innerHTML = tr + '<p>' + hint + '</p><button type="button" class="btn primary" data-a="finish"' + (fin && !isDone ? '' : ' disabled') + '>' + (isDone ? 'Abgeschlossen' : 'Station abschließen') + '</button>';
+}
+function openStation(id){
+  if (!ST[id]) return;
+  cur = id;
+  document.getElementById('toast').hidden = true;
+  if (id === 's2' && S.paar && !S.tab) S.tab = S.paar;
+  renderSheet();
+  sheet.hidden = false; document.body.classList.add('noscroll'); sheet.scrollTop = 0;
+  var c = sheet.querySelector('[data-a="close"]'); if (c) c.focus({preventScroll:true});
+}
+function closeSheet(){
+  stopSims(); sheet.hidden = true; document.body.classList.remove('noscroll'); cur = null; renderMap();
+}
+
+sheet.addEventListener('click', function(e){
+  if (taskClick(e)) return;
+  var a = e.target.closest('[data-a]'); if (!a) return;
+  var act = a.dataset.a, k = a.dataset.k;
+  if (act === 'close') return closeSheet();
+  if (act === 'goto') return openStation(k);
+  if (act === 'trans') { S.trans[cur] = !S.trans[cur]; save(); updateFoot(); return; }
+  if (act === 'finish') {
+    if (canFinish(cur)) { var fin = cur; S.done[cur] = true; save(); closeSheet();
+      if (fin !== 'ziel') toast('Geschafft! Sobald eure Gruppe so weit ist, kommt der Zeit-Manager nach vorne und hakt die Station auf der Fortschrittstafel ab.'); }
+    return;
+  }
+  if (act === 'alkyl') { ALK = +k; document.getElementById('alkBox').innerHTML = alkylInner(); return; }
+  if (act === 'rolle') { S.rolle = k; }
+  else if (act === 'these') { S[a.dataset.w][a.dataset.t] = a.dataset.v; }
+  else if (act === 'paar') { S.paar = k; S.tab = k; }
+  else if (act === 'paar-reset') { S.paar = ''; S.tab = ''; }
+  else if (act === 'tab') { S.tab = k; }
+  else if (act === 'tab3') { S.tab3 = k; }
+  else if (act === 'krit') { S.krit[k] = !S.krit[k]; }
+  else if (act === 'muster') { S.muster = !S.muster; }
+  else if (act === 'ins') {
+    var ta = document.getElementById('leitTa'); if (!ta) return;
+    var w = a.dataset.w, p0 = ta.selectionStart || ta.value.length, p1 = ta.selectionEnd || p0;
+    var before = ta.value.slice(0, p0), sp = before && !/\s$/.test(before) ? ' ' : '';
+    ta.value = before + sp + w + ta.value.slice(p1);
+    ta.focus(); var pos = (before + sp + w).length; ta.setSelectionRange(pos, pos);
+    leitInput(ta); return;
+  } else return;
+  save();
+  var y = sheet.scrollTop; renderSheet(); sheet.scrollTop = y;
+});
+function leitInput(ta){
+  S.text.leit = ta.value; save();
+  var long = ta.value.trim().length >= 60;
+  var lc = document.getElementById('leitCheck'), lh = document.getElementById('leitHint');
+  if (lc) lc.hidden = !long; if (lh) lh.hidden = long;
+  updateFoot();
+}
+sheet.addEventListener('input', function(e){
+  if (e.target.id === 'leitTa') leitInput(e.target);
+});
+sheet.addEventListener('keydown', function(e){
+  if (e.key === 'Enter' && e.target.id && e.target.id.indexOf('in-') === 0) { var c = e.target.closest('[data-task]'); var b = c && c.querySelector('[data-a="check"]'); if (b) b.click(); }
+  var hb = e.target.closest && e.target.closest('.hb');
+  if (hb && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); hb.dispatchEvent(new MouseEvent('click', {bubbles:true})); }
+});
+
+/* ---------- Überlagerungen ---------- */
+var toastT = 0;
+function toast(msg){ var t = document.getElementById('toast'); t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(function(){ t.hidden = true; }, 6000); }
+var pop = document.getElementById('pop');
+function openPop(kind){
+  var t = '', h = '';
+  if (kind === 'treppe') {
+    t = 'Hilfe-Treppe';
+    h = '<p>Steigt die Treppe Stufe für Stufe hinauf. Die Tipps findet ihr bei jeder Aufgabe.</p><ol class="treppe">' +
+      ['Material der Station noch einmal lesen', 'In der Gruppe nachfragen', 'Tipp 1 öffnen', 'Tipp 2 öffnen', 'Lehrkraft fragen'].map(function(x, i){ return '<li><b class="n">' + (i + 1) + '</b><span>' + x + '</span></li>'; }).join('') + '</ol>';
+  } else if (kind === 'wortspeicher') {
+    t = 'Wortspeicher';
+    h = '<dl class="gloss">' + [
+      ['Radikal', 'Teilchen mit einem ungepaarten Elektron, z. B. Br·. Radikale sind sehr reaktionsfreudig.'],
+      ['Alkyl-Radikal', 'Radikal aus einem Alkan-Molekül, dem ein H-Atom fehlt, z. B. C_3H_7·.'],
+      ['primäres C-Atom', 'C-Atom mit einem weiteren C-Atom als Nachbarn.'],
+      ['sekundäres C-Atom', 'C-Atom mit zwei C-Atomen als Nachbarn.'],
+      ['tertiäres C-Atom', 'C-Atom mit drei C-Atomen als Nachbarn.'],
+      ['Alkylgruppe', 'Rest aus C- und H-Atomen, z. B. die Methylgruppe –CH_3.'],
+      ['+I-Effekt', 'Eine Atomgruppe schiebt Elektronendichte zu ihrem Nachbaratom. Dabei wandert kein ganzes Elektron.'],
+      ['stabiler', 'Hier: energieärmer. Auch ein stabileres Radikal reagiert weiter.'],
+      ['Aktivierungsenergie', 'Energie, die Teilchen mindestens besitzen müssen, damit die Reaktion abläuft.'],
+      ['Hauptprodukt', 'Produkt, das in der Mischung den größten Anteil hat.']
+    ].map(function(r){ return '<dt>' + r[0] + '</dt><dd>' + fm(r[1]) + '</dd>'; }).join('') + '</dl>';
+  } else if (kind === 'regeln') {
+    t = 'Spielregeln';
+    h = '<ul style="display:flex;flex-direction:column;gap:8px;padding-left:1.2em;margin:0">' + [
+      'Erst selbst versuchen, dann die Hilfe-Treppe nutzen.',
+      'Nach jeder Station: Ergebnis auf das Ergebnisblatt übertragen.',
+      'Fertig vor der Zeit? Dann wartet eine Profi-Station.',
+      'Der Zeit-Manager hakt nach jeder Station euren Stand auf der Fortschrittstafel am Board ab.',
+      'In der Sicherung wird gelost. Jede Person soll jeden Teil erklären können.'].map(function(x){ return '<li>' + x + '</li>'; }).join('') + '</ul>';
+  } else if (kind === 'sitzung') {
+    t = 'Sitzung auf diesem iPad';
+    h = '<p>Auf diesem iPad ist schon eine Sitzung gespeichert.</p><div class="actions"><button type="button" class="btn primary small" data-a="pop-close">Das ist meine Sitzung</button><button type="button" class="btn small" data-a="reset-yes">Neue Sitzung starten</button></div>';
+  } else if (kind === 'ergebnisse') {
+    t = 'Meine Ergebnisse';
+    var tipsUsed = Object.keys(S.tips).reduce(function(n, k){ return n + (S.tips[k] || 0); }, 0);
+    var solved = Object.keys(S.tasks).filter(function(k){ return S.tasks[k].ok; }).length;
+    h = '<div class="res-sec"><h3>Stationen</h3><ul class="steps">' + ORDER.concat(['p1']).map(function(id){
+        return '<li><button type="button" data-open="' + id + '"><span class="mini' + (S.done[id] ? ' done' : '') + '">' + (ST[id].icon === 'flag' ? 'Z' : (ST[id].icon === 'camp' ? 'S' : ST[id].nr)) + '</span><span>' + ST[id].title + '</span>' + (S.done[id] ? '<span class="pill ok">erledigt</span>' : '<span class="pill">offen</span>') + '</button></li>'; }).join('') + '</ul></div>' +
+      '<div class="res-sec"><h3>Selbstständigkeit</h3><p>' + solved + ' Aufgaben gelöst, ' + tipsUsed + (tipsUsed === 1 ? ' Tipp' : ' Tipps') + ' genutzt' + (S.paar ? ', Expertenpaar ' + S.paar : '') + (S.rolle ? ', Rolle: ' + esc(S.rolle) : '') + '</p></div>' +
+      '<div class="res-sec"><h3>Unsere Antwort auf die Leitfrage</h3>' + (S.text.leit ? '<div class="answer">' + esc(S.text.leit) + '</div>' : '<p class="cap">Noch keine Antwort. Sie entsteht an Station 3.</p>') + '</div>' +
+      '<div class="res-sec"><h3>Thesen-Check</h3><div class="tblwrap"><table class="tbl"><tr><th>These</th><th>vorher</th><th>nachher</th></tr>' + THESEN.map(function(x, i){
+        function w(v){ return v ? (v === 'ja' ? 'stimmt' : 'stimmt nicht') : '–'; }
+        return '<tr><td>' + (i + 1) + ' ' + esc(x.text) + '</td><td>' + w(S.vor[x.id]) + '</td><td>' + w(S.nach[x.id]) + '</td></tr>'; }).join('') + '</table></div></div>' +
+      '<div class="res-sec" id="resetBox"><h3>Neu anfangen</h3><p class="cap">Löscht alle Eingaben auf diesem iPad, z. B. vor der nächsten Gruppe.</p><button type="button" class="btn small danger" data-a="reset-ask">Alles zurücksetzen</button></div>';
+  }
+  document.getElementById('popTitle').textContent = t;
+  document.getElementById('popBody').innerHTML = h;
+  pop.hidden = false;
+  pop.querySelector('[data-a="pop-close"]').focus({preventScroll:true});
+}
+pop.addEventListener('click', function(e){
+  if (e.target === pop) { pop.hidden = true; return; }
+  var o = e.target.closest('[data-open]');
+  if (o) { pop.hidden = true; openStation(o.dataset.open); return; }
+  var a = e.target.closest('[data-a]'); if (!a) return;
+  if (a.dataset.a === 'pop-close') pop.hidden = true;
+  else if (a.dataset.a === 'reset-ask') {
+    document.getElementById('resetBox').innerHTML = '<h3>Wirklich alles löschen?</h3><p class="cap">Alle Antworten, Häkchen und Thesen auf diesem iPad gehen verloren.</p><div class="actions"><button type="button" class="btn small danger" data-a="reset-yes">Ja, alles löschen</button><button type="button" class="btn small" data-a="reset-no">Abbrechen</button></div>';
+  } else if (a.dataset.a === 'reset-yes') {
+    S = fresh(); save(); pop.hidden = true; if (cur) closeSheet(); renderMap();
+  } else if (a.dataset.a === 'reset-no') openPop('ergebnisse');
+});
+
+document.addEventListener('click', function(e){
+  if (e.target.closest('#sheet') || e.target.closest('#pop')) return;
+  var p = e.target.closest('[data-pop]'); if (p) return openPop(p.dataset.pop);
+  var o = e.target.closest('[data-open]'); if (o) return openStation(o.dataset.open);
+});
+document.addEventListener('keydown', function(e){
+  if (e.key !== 'Escape') return;
+  if (!pop.hidden) pop.hidden = true; else if (!sheet.hidden) closeSheet();
+});
+
+window.addEventListener('hashchange', function(){
+  if (location.hash !== '#neu') return;
+  S = fresh(); save();
+  try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+  if (cur) closeSheet(); pop.hidden = true; renderMap();
+});
+renderMap();
+if (Object.keys(S.done).length || S.rolle || Object.keys(S.vor).length) openPop('sitzung');
+})();
+</script>
+</body>
+</html>
